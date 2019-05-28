@@ -21,6 +21,12 @@
             android:name=".CreateGroup"
             android:label="@string/title_activity_create_group"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".GroupCreateActivity"
+            android:label="@string/title_activity_create_group"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".ShowGroupActivity"
+            android:label="@string/title_activity_create_group"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".Messages"
             android:label="@string/title_activity_messages"
@@ -37,6 +43,9 @@
             android:name=".search_result"
             android:label="Search"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".adv_result"
+            android:label="Search"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
