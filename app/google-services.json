@@ -1,0 +1,93 @@
+{
+  "project_info": {
+    "project_number": "871445952966",
+    "firebase_url": "https://grouppager.firebaseio.com",
+    "project_id": "grouppager",
+    "storage_bucket": "grouppager.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:871445952966:android:3348c23fe4dd51d4",
+        "android_client_info": {
+          "package_name": "com.example.grouppager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "871445952966-466v0peiir7i3conbkgpfliq32aanmv8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.grouppager",
+            "certificate_hash": "5c6bcc2253a66d661a660ec7f5972914acccfac3"
+          }
+        },
+        {
+          "client_id": "871445952966-9oofeuh0oc5d3sejhojpd35c7g7ntj8a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.grouppager",
+            "certificate_hash": "1b741f199ca5df0d189e5eb3b2117e04d7f3eb70"
+          }
+        },
+        {
+          "client_id": "871445952966-oemj6urnknbl1p3kmtkgtorb9t31on8v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCt9R8-7t4ua7AGeVcKX-mGGAH1Dc-PzGQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "871445952966-oemj6urnknbl1p3kmtkgtorb9t31on8v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:871445952966:android:55f60ac443bb1c07",
+        "android_client_info": {
+          "package_name": "com.example.studygroups"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "871445952966-fakj3sjsee9s40f0ddgi09gr5mvstdlq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.studygroups",
+            "certificate_hash": "f18d2088e0833eccb4b45fc3b0d4a2782bffb787"
+          }
+        },
+        {
+          "client_id": "871445952966-oemj6urnknbl1p3kmtkgtorb9t31on8v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCt9R8-7t4ua7AGeVcKX-mGGAH1Dc-PzGQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "871445952966-oemj6urnknbl1p3kmtkgtorb9t31on8v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
