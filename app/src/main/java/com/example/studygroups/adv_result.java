@@ -1,10 +1,13 @@
 package com.example.studygroups;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.ArrayRes;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -22,6 +25,7 @@ public class adv_result extends AppCompatActivity {
 
     ListView listView;
 
+    ArrayList<Group> result_group = new ArrayList<>();
     ArrayList<String> arrayList = new ArrayList<>();
     ArrayAdapter<String> adapter;
 
@@ -36,7 +40,7 @@ public class adv_result extends AppCompatActivity {
         Bundle b = getIntent().getExtras();
         ArrayList<String> search_criteria = null;
 
-        if(b != null){
+        if (b != null) {
             search_criteria = b.getStringArrayList("key");
             Log.i("List", "Passed Array List :: " + search_criteria);
         }
@@ -45,7 +49,7 @@ public class adv_result extends AppCompatActivity {
 
         listView = (ListView) findViewById(R.id.adv_list);
 
-        adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, arrayList);
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayList);
         listView.setAdapter(adapter);
 
         String department = search_criteria.get(0);
@@ -54,31 +58,30 @@ public class adv_result extends AppCompatActivity {
 
         Query query = null;
 
-        if(!department.equals(""))
-        {
-            query = collection.whereEqualTo("department",department);
-            if(!course_no.equals("") && !professor.equals("")){
-                query = collection.whereEqualTo("department",department)
-                        .whereEqualTo("course_no",course_no)
-                        .whereEqualTo("prof",professor);
+        if (!department.equals("")) {
+            query = collection.whereEqualTo("department", department);
+            if (!course_no.equals("") && !professor.equals("")) {
+                query = collection.whereEqualTo("department", department)
+                        .whereEqualTo("course_no", course_no)
+                        .whereEqualTo("prof", professor);
             }
-            if(!course_no.equals("") && professor.equals("")){
-                query = collection.whereEqualTo("department",department)
-                        .whereEqualTo("course_no",course_no);
+            if (!course_no.equals("") && professor.equals("")) {
+                query = collection.whereEqualTo("department", department)
+                        .whereEqualTo("course_no", course_no);
             }
-            if(course_no.equals("") && !professor.equals("")){
-                query = collection.whereEqualTo("department",department)
-                        .whereEqualTo("prof",professor);
+            if (course_no.equals("") && !professor.equals("")) {
+                query = collection.whereEqualTo("department", department)
+                        .whereEqualTo("prof", professor);
             }
         }
 
         //department is empty
         //if course_num is not empty
-        else if(!course_no.equals("")){
+        else if (!course_no.equals("")) {
             //if professor is not empty
-            if(!professor.equals("")){
-                query = collection.whereEqualTo("course_no",course_no)
-                        .whereEqualTo("prof",professor);
+            if (!professor.equals("")) {
+                query = collection.whereEqualTo("course_no", course_no)
+                        .whereEqualTo("prof", professor);
             }
             //only has course_num
             else {
@@ -88,8 +91,8 @@ public class adv_result extends AppCompatActivity {
 
         //department is empty
         //course_num is also empty
-        else{
-            if(!professor.equals("")){
+        else {
+            if (!professor.equals("")) {
                 query = collection.whereEqualTo("prof", professor);
             }
         }
@@ -97,18 +100,33 @@ public class adv_result extends AppCompatActivity {
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     arrayList.clear();
-                    for(QueryDocumentSnapshot document: task.getResult()){
-                        String value = document.toObject(Group.class).toString();
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        Group group = document.toObject(Group.class);
+                        String value = group.toString();
                         System.out.println(value);
                         arrayList.add(value);
-
+                        result_group.add(group);
                     }
                     adapter.notifyDataSetChanged();
                 }
             }
         });
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Group target = result_group.get(position);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("group",target);
+
+                Intent intent = new Intent(adv_result.this, GroupProfile.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+
     }
 
 

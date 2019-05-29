@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -28,6 +30,7 @@ public class search_result extends AppCompatActivity {
     ListView listView;
     ArrayList<String> arrayList = new ArrayList<>();
     ArrayAdapter<String> adapter;
+    ArrayList<Group> result_group = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +58,11 @@ public class search_result extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
                     for(QueryDocumentSnapshot document: task.getResult()){
-                        String value = document.toObject(Group.class).toString();
+                        Group group = document.toObject(Group.class);
+                        String value = group.toString();
                         System.out.println(value);
                         arrayList.add(value);
-
+                        result_group.add(group);
                     }
                     adapter.notifyDataSetChanged();
                 }
@@ -70,10 +74,11 @@ public class search_result extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
                     for(QueryDocumentSnapshot document: task.getResult()){
-                        String value = document.toObject(Group.class).toString();
+                        Group group = document.toObject(Group.class);
+                        String value = group.toString();
                         System.out.println(value);
                         arrayList.add(value);
-
+                        result_group.add(group);
                     }
                     adapter.notifyDataSetChanged();
                 }
@@ -85,10 +90,11 @@ public class search_result extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
                     for(QueryDocumentSnapshot document: task.getResult()){
-                        String value = document.toObject(Group.class).toString();
+                        Group group = document.toObject(Group.class);
+                        String value = group.toString();
                         System.out.println(value);
                         arrayList.add(value);
-
+                        result_group.add(group);
                     }
                     adapter.notifyDataSetChanged();
                 }
@@ -100,15 +106,30 @@ public class search_result extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
                     for(QueryDocumentSnapshot document: task.getResult()){
-                        String value = document.toObject(Group.class).toString();
+                        Group group = document.toObject(Group.class);
+                        String value = group.toString();
                         System.out.println(value);
                         arrayList.add(value);
-
+                        result_group.add(group);
                     }
                     adapter.notifyDataSetChanged();
                 }
             }
         });
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Group target = result_group.get(position);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("group",target);
+
+                Intent intent = new Intent(search_result.this, GroupProfile.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
     }
+
 }

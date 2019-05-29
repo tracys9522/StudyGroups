@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +13,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Spinner;
 
-import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 
 /**
@@ -115,7 +109,7 @@ public class adv_search extends Fragment {
         Button search = v.findViewById(R.id.search);
         Button reset = v.findViewById(R.id.reset);
 
-        box1 = v.findViewById(R.id.department);
+        box1 = v.findViewById(R.id.type_title);
         box2 = v.findViewById(R.id.coursenum);
         box3 = v.findViewById(R.id.professor);
 

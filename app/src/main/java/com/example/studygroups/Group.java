@@ -2,7 +2,9 @@ package com.example.studygroups;
 
 import android.widget.EditText;
 
-public class Group {
+import java.io.Serializable;
+
+public class Group implements Serializable {
     String name;
     String type;
     String department;
@@ -21,6 +23,22 @@ public class Group {
         this.course_no = course_no;
         this.prof = prof;
         this.key = "";
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public String getCourse_no() {
+        return course_no;
+    }
+
+    public String getProf() {
+        return prof;
     }
 
     public String getName(){
