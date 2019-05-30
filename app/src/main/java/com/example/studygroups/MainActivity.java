@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void addGroup(View view){
-        Intent myIntent = new Intent(this, GroupCreateActivity.class);
+        Intent myIntent = new Intent(this, CreateGroup.class);
         startActivity(myIntent);
     }
 
