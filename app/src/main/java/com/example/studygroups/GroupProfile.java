@@ -115,6 +115,7 @@ public class GroupProfile extends AppCompatActivity {
 
                     collection.document(groupDocument.getId()).update("group_member",currentMembers);
                     collectionProfile.document(userDocument.getId()).update("groups",currentGroups);
+                    Toast.makeText(GroupProfile.this, "Joined", Toast.LENGTH_LONG).show();
                 }
             }
         });
