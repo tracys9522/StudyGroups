@@ -104,7 +104,7 @@ public class GroupProfile extends AppCompatActivity {
                     }
                 }
                 if(found){
-                    //Toast
+                    Toast.makeText(GroupProfile.this, "You have already joined this group!", Toast.LENGTH_LONG).show();
                 }
                 else{
                     currentMembers.add(currentUser);
@@ -114,14 +114,7 @@ public class GroupProfile extends AppCompatActivity {
                     System.out.println("PRINT CURERNT GROUPS"+currentGroups.size());
 
                     collection.document(groupDocument.getId()).update("group_member",currentMembers);
-
-                    //insert
-                    if(userDocument == null){
-                        System.out.println("USER DOCUMENT IS NULL");
-                    }
                     collectionProfile.document(userDocument.getId()).update("groups",currentGroups);
-                    //Query query = collectionProfile.whereEqualTo("username",uniqueCreator);
-
                 }
             }
         });
