@@ -1,12 +1,14 @@
 package com.example.studygroups;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -42,8 +44,10 @@ public class ActiveGroup extends Fragment {
     DatabaseReference active_group_database;
     DatabaseReference closed_group_database;
     private OnFragmentInteractionListener mListener;
+
     ArrayList<String> active_keys;
     FirebaseFirestore db;
+    ArrayList<Group> result_group = new ArrayList<>();
 
     public ActiveGroup() {
         // Required empty public constructor
@@ -98,6 +102,8 @@ public class ActiveGroup extends Fragment {
                 for (DocumentSnapshot snapshot : documentSnapshots) {
                     if(snapshot.get("name") != null) {
                         active_keys.add((String) snapshot.get("name"));
+                        Group group = snapshot.toObject(Group.class);
+                        result_group.add(group);
                     }
                 }
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_selectable_list_item, active_keys);
@@ -106,8 +112,18 @@ public class ActiveGroup extends Fragment {
             }
         });
 
+        active_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Group target = result_group.get(position);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("group",target);
 
-
+                Intent intent = new Intent(getActivity(), GroupProfile.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
 
 
         return ll;
