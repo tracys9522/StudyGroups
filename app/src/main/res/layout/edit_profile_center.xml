@@ -1,7 +1,7 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:showIn="@layout/fragment_edit_profile">
+    tools:showIn="@layout/activity_edit_profile">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -22,7 +22,7 @@
                 app:civ_border_color="@color/cardview_dark_background"
                 app:civ_border_width="2dp" />
 
-            <TextView
+            <Button
                 android:id="@+id/changePropilePic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

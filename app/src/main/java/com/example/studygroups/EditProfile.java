@@ -1,69 +1,49 @@
 package com.example.studygroups;
 
-import android.content.Context;
-import android.media.Image;
+import android.app.AppComponentFactory;
+import android.content.ContentResolver;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.content.Intent;
-import java.util.HashMap;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.DocumentReference;
-
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.OnFailureListener;
-
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
-import com.google.firebase.FirebaseApp;
-
-
-import com.nostra13.universalimageloader.core.ImageLoader.*;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
-import io.opencensus.tags.Tag;
+
+public class EditProfile extends AppCompatActivity {
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link EditProfile.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link EditProfile#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class EditProfile extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    public static final String TAG = "Edit Profile";
 
-    public static final String TAG = "Taz";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    public static final int PICK_IMAGE_REQUEST = 1;
 
     private ListView listview;
     private ArrayList<String> addedClasses;
@@ -76,69 +56,47 @@ public class EditProfile extends Fragment {
     private EditText display_name;
     private EditText major;
     private UserProfile user;
+    private Button changeProfilePictureButton;
+
+    private StorageTask uploadTask;
+
+    private Uri imguri;
 
 
     private ImageView profilePicture;
 
-    private OnFragmentInteractionListener mListener;
-
-    private HashMap<String,String> info = new HashMap<>();
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference collection = db.collection("User Profile");
     DocumentReference userDoc;
 
-    private View view;
-
-    protected View mView;
-
-    // TODO: Rename and change types and number of parameters
-    public static EditProfile newInstance(String param1, String param2) {
-        EditProfile fragment = new EditProfile();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    StorageReference mStorageRef;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        setContentView(R.layout.activity_edit_profile);
 
-    }
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        super.onCreateView(inflater, container, savedInstanceState);
-
-
-
-        view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
-        this.mView = view;
-
-        classInput = (EditText) view.findViewById(R.id.classesInput);
-        addClassButton = (Button) view.findViewById(R.id.addClassButton);
-        backButton = (Button) view.findViewById(R.id.backButton);
+        imguri = null;
+        classInput = (EditText) findViewById(R.id.classesInput);
+        addClassButton = (Button) findViewById(R.id.addClassButton);
+        backButton = (Button) findViewById(R.id.backButton);
 
         addedClasses = new ArrayList<String>();
-        profilePicture = (ImageView) view.findViewById(R.id.profilePictureEdit);
-        changeUsername = (EditText) view.findViewById(R.id.changeUsername);
-        display_name = (EditText) view.findViewById(R.id.display_name);
-        major = (EditText) view.findViewById(R.id.major);
-        listview = (ListView) view.findViewById(R.id.classList);
-        adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, addedClasses );
+        profilePicture = (ImageView) findViewById(R.id.profilePictureEdit);
+        changeUsername = (EditText) findViewById(R.id.changeUsername);
+        display_name = (EditText) findViewById(R.id.display_name);
+        major = (EditText) findViewById(R.id.major);
+        listview = (ListView) findViewById(R.id.classList);
+        adapter = new ArrayAdapter<String>(EditProfile.this, android.R.layout.simple_list_item_1, addedClasses );
         listview.setAdapter(adapter);
 
+        changeProfilePictureButton = (Button) findViewById(R.id.changePropilePic);
 
-        saveChangesButton = (Button) view.findViewById(R.id.saveChanges);
 
+        saveChangesButton = (Button) findViewById(R.id.saveChanges);
+
+        mStorageRef = FirebaseStorage.getInstance().getReference("Images");
 
         Query query = collection.whereEqualTo("username","thackson@scu.edu");
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -156,6 +114,10 @@ public class EditProfile extends Fragment {
                         }
                         if(user.major != null){
                             major.setText(user.major);
+                        }
+                        if(user.profilePicture != null){
+                            imguri = Uri.parse(user.profilePicture);
+                            profilePicture.setImageURI(imguri);
                         }
                         if(user.classes.size() > 0){
                             for(int i = 0; i < user.classes.size(); i++){
@@ -181,7 +143,7 @@ public class EditProfile extends Fragment {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent p = new Intent(getActivity(), Profile.class);
+                Intent p = new Intent(EditProfile.this, Profile.class);
                 startActivity(p);
             }
         });
@@ -189,10 +151,21 @@ public class EditProfile extends Fragment {
         saveChangesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveChanges(view);
-
-                Intent p = new Intent(getActivity(), Profile.class);
+                if(imguri != null){
+                    if(uploadTask != null && uploadTask.isInProgress()){
+                    } else{
+                        FileUploader();
+                    }
+                    saveChanges();
+                }
+                Intent p = new Intent(EditProfile.this, Profile.class);
                 startActivity(p);
+            }
+        });
+        changeProfilePictureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FileChooser();
             }
         });
 
@@ -200,68 +173,81 @@ public class EditProfile extends Fragment {
         setProfileImage();
 
 
+    }
 
-        return view;
+    private void FileUploader(){
+
+        final StorageReference ref = mStorageRef.child(System.currentTimeMillis()+"");
+        uploadTask= ref.putFile(imguri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        // Get a URL to the uploaded content
+                        //Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        System.out.println("Image uploaded!");
+
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle unsuccessful uploads
+                        // ...
+                        System.out.println("Error in uploading image.");
+                    }
+                });
+    }
+    private String getExtension(Uri uri){
+        ContentResolver cr = getContentResolver();
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+        return mimeTypeMap.getExtensionFromMimeType(cr.getType(uri));
+    }
+    private void FileChooser(){
+
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null){
+            imguri = data.getData();
+
+//                Picasso.with(this).load(imguri).into(profilePicture);
+            profilePicture.setImageURI(imguri);
+        }
     }
 
     private void initImageLoader(){
-        UniversalImageLoader universalImageLoader = new UniversalImageLoader(getActivity());
+        UniversalImageLoader universalImageLoader = new UniversalImageLoader(this);
         ImageLoader imageLoader = ImageLoader.getInstance();
         imageLoader.init(universalImageLoader.getConfig());
     }
 
     private void setProfileImage(){
-        String imgURL = "https://wallpaperstream.com/wallpapers/full/tulips/Tulips-Flowers-Bouquet-HD-Wallpaper.jpg";
-        UniversalImageLoader.setImage(imgURL, profilePicture, null, "");
-
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+        if(imguri == null){
+            String imgURL = "https://wallpaperstream.com/wallpapers/full/tulips/Tulips-Flowers-Bouquet-HD-Wallpaper.jpg";
+            UniversalImageLoader.setImage(imgURL, profilePicture, null, "");
         }
+
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-
-    public void saveChanges(View view){
-        EditText username = (EditText)view.findViewById(R.id.changeUsername);
+    public void saveChanges(){
+        EditText username = (EditText)findViewById(R.id.changeUsername);
         String usernameString = username.getText().toString();
-        EditText name = (EditText)view.findViewById(R.id.display_name);
+        EditText name = (EditText)findViewById(R.id.display_name);
         String nameString = name.getText().toString();
-        EditText major = (EditText)view.findViewById(R.id.major);
+        EditText major = (EditText)findViewById(R.id.major);
         String majorString = major.getText().toString();
+
+
 
 
         //TODO update the database
@@ -271,16 +257,18 @@ public class EditProfile extends Fragment {
             user.display_name = nameString;
             user.major = majorString;
             user.classes = addedClasses;
+            user.profilePicture = imguri.toString();
 
             collection.document(userDoc.getId()).update(
                     "username", user.username,
                     "display_name", user.display_name,
                     "major", user.major,
-                    "classes", user.classes
+                    "classes", user.classes,
+                    "profilePicture", user.profilePicture
             );
 
         } else {
-            user = new UserProfile(usernameString, nameString, majorString, addedClasses);
+            user = new UserProfile(usernameString, nameString, majorString, imguri.toString(),addedClasses);
             collection
                     .add(user)
                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -297,11 +285,9 @@ public class EditProfile extends Fragment {
                     });
 
         }
-
-
-
-
-
     }
+
+
+
 
 }

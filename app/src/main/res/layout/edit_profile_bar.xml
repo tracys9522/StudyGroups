@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:showIn="@layout/fragment_edit_profile">
+    tools:showIn="@layout/activity_edit_profile">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

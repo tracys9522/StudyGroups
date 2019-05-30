@@ -38,7 +38,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 
 public class Profile extends AppCompatActivity
-        implements EditProfile.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener {
+        implements  NavigationView.OnNavigationItemSelectedListener {
 
     ArrayList<String> classes = new ArrayList<String>();
     ArrayList<String> groups = new ArrayList<String>();
@@ -47,6 +47,7 @@ public class Profile extends AppCompatActivity
     private TextView majorText;
     private ListView classesList;
     private ListView groupsList;
+    private ImageView profilePicture;
 
     private ArrayAdapter<String> groupsAdapter;
     private ArrayAdapter<String> classesAdapter;
@@ -54,6 +55,8 @@ public class Profile extends AppCompatActivity
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference collection = db.collection("User Profile");
     DocumentReference userDoc;
+
+    private Uri imguri;
 
 
 
@@ -65,11 +68,12 @@ public class Profile extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
+        imguri = null;
         userName = (TextView) findViewById(R.id.userName);
         majorText = (TextView) findViewById(R.id.majorText);
         classesList= (ListView) findViewById(R.id.classes);
         groupsList = (ListView) findViewById(R.id.groups);
+        profilePicture = (ImageView) findViewById(R.id.profilePicture);
 
 
         classesAdapter = new ArrayAdapter<String>(
@@ -91,23 +95,23 @@ public class Profile extends AppCompatActivity
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
-                    System.out.println("Test 1");
                     for(QueryDocumentSnapshot document: task.getResult()){
-                        System.out.println("Test 2");
                         userDoc = document.getReference();
                         UserProfile user = document.toObject(UserProfile.class);
-                        System.out.println("Test 3");
 
                         if(user.display_name != null){
-                            System.out.println("Test 4");
                             userName.setText(user.display_name);
                         }
                         if(user.major != null){
-                            System.out.println("Test 5");
                             majorText.setText(user.major);
                         }
+                        if(user.profilePicture != null){
+                            imguri = Uri.parse(user.profilePicture);
+                            profilePicture.setImageURI(imguri);
+                        }else {
+                            imguri = null;
+                        }
                         if(user.classes.size() > 0){
-                            System.out.println("Test 6");
                             for(int i = 0; i < user.classes.size(); i++) {
                                 classes.add(i, user.classes.get(i));
                             }
@@ -115,7 +119,6 @@ public class Profile extends AppCompatActivity
                         }
                         ArrayList<String> tempGroups = user.groups;
                         if(tempGroups != null){
-                            System.out.println("Test 7");
                             for(int i = 0; i < user.groups.size(); i++) {
                                 groups.add(i,user.groups.get(i));
                             }
@@ -144,12 +147,10 @@ public class Profile extends AppCompatActivity
         editProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO call the edit profile fragment
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                EditProfile fragment = new EditProfile();
-                fragmentTransaction.add(R.id.fragment_container, fragment);
-                fragmentTransaction.commit();
+
+                Intent intent = new Intent(Profile.this, EditProfile.class);
+                startActivity(intent);
+
 
             }
         });
@@ -226,8 +227,5 @@ public class Profile extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    @Override
-    public void onFragmentInteraction(Uri uri){
-        //you can leave it empty
-    }
+
 }
