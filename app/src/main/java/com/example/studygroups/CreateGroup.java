@@ -19,6 +19,7 @@ import android.widget.EditText;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class CreateGroup extends AppCompatActivity
@@ -65,7 +66,12 @@ public class CreateGroup extends AppCompatActivity
         }
 
         System.out.println(group_name);
-        Group g = new Group(group_name, type, department, course_no, professor);
+
+        //TODO
+        //get creator
+        String creator = "thackson@scu.edu";
+
+        Group g = new Group(group_name, type, department, course_no, professor,creator);
         DocumentReference addedDocRef = reff.collection("Active Groups").document();
         String key = addedDocRef.getId();
         g.setKey(key);

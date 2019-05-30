@@ -3,6 +3,7 @@ package com.example.studygroups;
 import android.widget.EditText;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Group implements Serializable {
     String name;
@@ -12,17 +13,20 @@ public class Group implements Serializable {
     String prof;
     boolean active;
     String key;
-
+    String creator;
+    ArrayList<String> group_member = new ArrayList<>();
 
     public Group(){}
 
-    public Group(String name, String type, String department, String course_no, String prof){
+    public Group(String name, String type, String department, String course_no, String prof, String creator){
         this.name = name;
         this.type = type;
         this.department = department;
         this.course_no = course_no;
         this.prof = prof;
         this.key = "";
+        this.active = true;
+        this.creator = creator;
     }
 
     public String getType() {
@@ -51,4 +55,5 @@ public class Group implements Serializable {
     {
         return this.name + "\n" + department + course_no + "-" +prof;
     }
+
 }
