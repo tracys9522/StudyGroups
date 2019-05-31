@@ -13,7 +13,6 @@ public class ShowGroupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_show_group);
         String key = (String) getIntent().getStringExtra("key");
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-
     }
 
 

@@ -58,8 +58,6 @@ public class Profile extends AppCompatActivity
 
     private Uri imguri;
 
-
-
     Button editProfile;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

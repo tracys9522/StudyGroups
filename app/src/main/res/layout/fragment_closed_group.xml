@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Closed_Group">
+    tools:context=".ClosedGroup">
 
     <ListView
         android:id="@+id/closed_list_view"

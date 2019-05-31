@@ -48,7 +48,9 @@ public class Group implements Serializable {
     public String getName(){
         return name;
     }
+
     public String getKey(){return key;}
+
     public void setKey(final String key){this.key = key;}
 
     public String toString()

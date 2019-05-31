@@ -34,6 +34,7 @@ public class GroupProfile extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference collection = db.collection("Active Groups");
     CollectionReference collectionProfile = db.collection("User Profile");
+    CollectionReference close_collection = db.collection("Closed Groups");
     DocumentReference groupDocument;
     DocumentReference userDocument;
 
@@ -50,7 +51,7 @@ public class GroupProfile extends AppCompatActivity {
         creator = findViewById(R.id.creator);
 
         Bundle bundle = getIntent().getExtras();
-        final Group target = (Group)bundle.getSerializable("group");
+        final Group target = (Group) bundle.getSerializable("group");
 
         name.setText(target.getName());
         type.setText(target.getType());
@@ -65,6 +66,7 @@ public class GroupProfile extends AppCompatActivity {
         newGroup = target.name;
 
         Query search = collection.whereEqualTo("key",target.key);
+
         search.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -114,7 +116,7 @@ public class GroupProfile extends AppCompatActivity {
                     System.out.println("PRINT CURRENT MEMEBER SIZE" + currentMembers.size());
                     System.out.println("PRINT CURERNT GROUPS"+currentGroups.size());
 
-                    collection.document(groupDocument.getId()).update("group_member",currentMembers);
+                    collection.document(groupDocument.getId()).update("group_member", currentMembers);
                     collectionProfile.document(userDocument.getId()).update("groups",currentGroups);
                     Toast.makeText(GroupProfile.this, "Joined", Toast.LENGTH_LONG).show();
                 }
@@ -126,6 +128,20 @@ public class GroupProfile extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(GroupProfile.this, UploadImage.class);
+                startActivity(intent);
+            }
+        });
+
+        Button close = findViewById(R.id.close);
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DocumentReference addedDocRef = close_collection.document();
+                String key = addedDocRef.getId();
+                target.setKey(key);
+                addedDocRef.set(target);
+                collection.document(groupDocument.getId()).delete();
+                Intent intent = new Intent(GroupProfile.this, MainActivity.class);
                 startActivity(intent);
             }
         });
