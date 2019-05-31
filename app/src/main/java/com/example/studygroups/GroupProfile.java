@@ -1,5 +1,6 @@
 package com.example.studygroups;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -117,6 +118,15 @@ public class GroupProfile extends AppCompatActivity {
                     collectionProfile.document(userDocument.getId()).update("groups",currentGroups);
                     Toast.makeText(GroupProfile.this, "Joined", Toast.LENGTH_LONG).show();
                 }
+            }
+        });
+
+        Button upload = findViewById(R.id.upload);
+        upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(GroupProfile.this, UploadImage.class);
+                startActivity(intent);
             }
         });
 
