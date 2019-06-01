@@ -34,9 +34,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Profile extends AppCompatActivity
         implements  NavigationView.OnNavigationItemSelectedListener {
@@ -55,11 +56,14 @@ public class Profile extends AppCompatActivity
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference collection = db.collection("User Profile");
+    CollectionReference active = db.collection("Active Groups");
+
     DocumentReference userDoc;
-
+    Button acceptButton;
+    Button rejectButton;
+    String email;
+    Group group;
     private Uri imguri;
-
-
 
     Button editProfile;
     @Override
@@ -69,12 +73,16 @@ public class Profile extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
+
+        imguri = null;
         userName = (TextView) findViewById(R.id.userName);
         majorText = (TextView) findViewById(R.id.majorText);
         classesList= (ListView) findViewById(R.id.classes);
         groupsList = (ListView) findViewById(R.id.groups);
         profilePicture = (ImageView) findViewById(R.id.profilePicture);
-
+        acceptButton = (Button) findViewById(R.id.accept_button);
+        rejectButton = (Button) findViewById(R.id.reject_button);
 
         classesAdapter = new ArrayAdapter<String>(
                 this,
@@ -86,11 +94,76 @@ public class Profile extends AppCompatActivity
         groupsAdapter = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_list_item_1,
-                groups );
+                PostLoginActivity.current_user.groups );
 
         groupsList.setAdapter(groupsAdapter);
 
-        Query query = collection.whereEqualTo("username","thackson@scu.edu");
+        email = getIntent().getStringExtra("username");
+        String showButtons = getIntent().getStringExtra("showButtons");
+        Bundle bundle = getIntent().getExtras();
+        group = (Group) bundle.getSerializable("group");
+
+        if(showButtons == null){
+            acceptButton.setVisibility(View.GONE);
+            acceptButton.setClickable(false);
+
+            rejectButton.setVisibility(View.GONE);
+            rejectButton.setClickable(false);
+        }
+
+        acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                group.addGroupMember(email);
+                Query query = active.whereEqualTo("name",group.name);
+                query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                DocumentReference groupDoc = document.getReference();
+                                Map<String, Object> answers = new HashMap<>();
+                                answers.put("pending_invitations", group.pending_invitations);
+                                answers.put("group_member", group.group_member);
+                                active.document(groupDoc.getId()).update(answers);
+                                rejectButton.setVisibility(View.GONE);
+                                rejectButton.setClickable(false);
+                                acceptButton.setText("Accepted!");
+                                break;
+                            }
+                        }
+                    }
+                });
+            }
+        });
+
+
+        rejectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                group.removePendingInvitation(email);
+                Query query = active.whereEqualTo("name",group.name);
+                query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                DocumentReference groupDoc = document.getReference();
+                                Map<String, Object> answers = new HashMap<>();
+                                answers.put("pending_invitations", group.pending_invitations);
+                                active.document(groupDoc.getId()).update(answers);
+                                acceptButton.setVisibility(View.GONE);
+                                acceptButton.setClickable(false);
+                                rejectButton.setText("Rejected!");
+                                break;
+                            }
+                        }
+                    }
+                });
+            }
+        });
+
+        Query query = collection.whereEqualTo("username",email);
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -155,21 +228,6 @@ public class Profile extends AppCompatActivity
             }
         });
 
-        initImageLoader();
-        setProfileImage();
-
-    }
-    private void initImageLoader(){
-        UniversalImageLoader universalImageLoader = new UniversalImageLoader(this);
-        ImageLoader imageLoader = ImageLoader.getInstance();
-        imageLoader.init(universalImageLoader.getConfig());
-    }
-
-    private void setProfileImage(){
-        if(imguri == null){
-            String imgURL = "https://wallpaperstream.com/wallpapers/full/tulips/Tulips-Flowers-Bouquet-HD-Wallpaper.jpg";
-            UniversalImageLoader.setImage(imgURL, profilePicture, null, "");
-        }
 
     }
 
@@ -229,11 +287,13 @@ public class Profile extends AppCompatActivity
                 startActivity(cg);
                 break;
             case R.id.nav_groups:
-                Intent g = new Intent(Profile.this, MainActivity.class);
+                Intent g = new Intent(Profile.this, PostLoginActivity.class);
+                g.putExtra("original_activity", "not main");
                 startActivity(g);
                 break;
             case R.id.nav_logout:
-                Intent l = new Intent(Profile.this, MainActivity.class);
+                Intent l = new Intent(Profile.this, PostLoginActivity.class);
+                l.putExtra("original_activity", "not main");
                 startActivity(l);
                 break;
         }

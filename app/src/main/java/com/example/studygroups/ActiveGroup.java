@@ -4,12 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -47,7 +50,8 @@ public class ActiveGroup extends Fragment {
 
     ArrayList<String> active_keys;
     FirebaseFirestore db;
-    ArrayList<Group> result_group = new ArrayList<>();
+    ArrayList<Group> result_group;
+    FloatingActionButton addButton;
 
     public ActiveGroup() {
         // Required empty public constructor
@@ -68,8 +72,6 @@ public class ActiveGroup extends Fragment {
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
-
-
         return fragment;
     }
 
@@ -81,9 +83,8 @@ public class ActiveGroup extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         db = FirebaseFirestore.getInstance();
-//        db = FirebaseDatabase.getInstance().getReference();
-//        closed_group_database = FirebaseDatabase.getInstance().getReference().child("Closed Groups");
         active_keys = new ArrayList<>();
+        result_group = new ArrayList<>();
     }
 
 
@@ -94,6 +95,15 @@ public class ActiveGroup extends Fragment {
         // Inflate the layout for this fragment
         LinearLayout ll = (LinearLayout) inflater.inflate(R.layout.fragment_active_group, container, false);
         final ListView active_list = (ListView) ll.findViewById(R.id.active_list_view);
+        addButton = ll.findViewById(R.id.add_button);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), CreateGroup.class);
+                startActivity(intent);
+            }
+        });
+
         db.collection("Active Groups").addSnapshotListener(new EventListener<QuerySnapshot>() {
 
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
@@ -139,22 +149,7 @@ public class ActiveGroup extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
     }
-
-//    @Override
-//    public void onDetach() {
-//        super.onDetach();
-//        mListener = null;
-//    }
-
-
-
 
 
     /**

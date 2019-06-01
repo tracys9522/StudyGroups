@@ -85,6 +85,26 @@
             android:textColor="@color/school"
             android:textSize="16sp" />
 
+        <Button
+            android:id="@+id/accept_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="35dp"
+            android:text="Accept" />
+
+        <Button
+            android:id="@+id/reject_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="35dp"
+            android:text="Reject" />
+
 
     </RelativeLayout>
 
@@ -231,7 +251,6 @@
 
 
             </LinearLayout>
-
 
 
         </LinearLayout>

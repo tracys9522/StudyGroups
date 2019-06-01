@@ -134,10 +134,18 @@
         android:orientation="vertical"></LinearLayout>
 
     <Button
-        android:id="@+id/upload"
+    android:id="@+id/upload"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:text="Upload" />
+
+    <Button
+        android:id="@+id/close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Upload" />
+        android:text="Close Group"
+        />
 
 </LinearLayout>

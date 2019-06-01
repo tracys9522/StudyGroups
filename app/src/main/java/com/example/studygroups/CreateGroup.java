@@ -2,6 +2,7 @@ package com.example.studygroups;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -16,17 +17,28 @@ import android.view.MenuItem;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class CreateGroup extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     FirebaseFirestore reff;
     static HashMap<String, Integer> group_name_map = new HashMap<>();
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    CollectionReference collectionProfile = db.collection("User Profile");
+    Group g;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,21 +81,44 @@ public class CreateGroup extends AppCompatActivity
 
         //TODO
         //get creator
-        String creator = "thackson@scu.edu";
+        String creator = PostLoginActivity.username;
 
-        Group g = new Group(group_name, type, department, course_no, professor,creator);
+        g = new Group(group_name, type, department, course_no, professor, creator);
         DocumentReference addedDocRef = reff.collection("Active Groups").document();
         String key = addedDocRef.getId();
         g.setKey(key);
-
         addedDocRef.set(g);
-        Intent myIntent = new Intent(this, MainActivity.class);
+
+        Query searchUser = collectionProfile.whereEqualTo("username", PostLoginActivity.current_user.getUsername());
+        searchUser.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        DocumentReference userDocument = document.getReference();
+                        Map<String, Object> groups = new HashMap<>();
+                        PostLoginActivity.current_user.addGroup(g);
+                        groups.put("groups", PostLoginActivity.current_user.groups);
+                        userDocument.update(groups);
+                        break;
+                    }
+                }
+            }
+        });
+
+
+
+
+
+        Intent myIntent = new Intent(this, PostLoginActivity.class);
+        myIntent.putExtra("original_activity", "create");
         startActivity(myIntent);
     }
 
 
     public void cancel(View view){
-        Intent myIntent = new Intent(this, MainActivity.class);
+        Intent myIntent = new Intent(this, PostLoginActivity.class);
+        myIntent.putExtra("original_activity", "create");
         startActivity(myIntent);
     }
 
@@ -143,11 +178,13 @@ public class CreateGroup extends AppCompatActivity
                 startActivity(cg);
                 break;
             case R.id.nav_groups:
-                Intent g = new Intent(this, MainActivity.class);
+                Intent g = new Intent(this, PostLoginActivity.class);
+                g.putExtra("original_activity", "not main");
                 startActivity(g);
                 break;
             case R.id.nav_logout:
-                Intent l = new Intent(this, MainActivity.class);
+                Intent l = new Intent(this, PostLoginActivity.class);
+                l.putExtra("original_activity", "not main");
                 startActivity(l);
                 break;
         }
