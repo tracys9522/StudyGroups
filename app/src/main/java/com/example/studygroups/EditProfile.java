@@ -77,7 +77,6 @@ public class EditProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
-        imguri = null;
         classInput = (EditText) findViewById(R.id.classesInput);
         addClassButton = (Button) findViewById(R.id.addClassButton);
         backButton = (Button) findViewById(R.id.backButton);
@@ -118,6 +117,8 @@ public class EditProfile extends AppCompatActivity {
                         if(user.profilePicture != null){
                             imguri = Uri.parse(user.profilePicture);
                             profilePicture.setImageURI(imguri);
+                        } else {
+                            imguri = null;
                         }
                         if(user.classes.size() > 0){
                             for(int i = 0; i < user.classes.size(); i++){

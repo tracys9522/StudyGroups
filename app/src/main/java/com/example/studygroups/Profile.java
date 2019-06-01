@@ -34,6 +34,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 
@@ -68,7 +69,6 @@ public class Profile extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        imguri = null;
         userName = (TextView) findViewById(R.id.userName);
         majorText = (TextView) findViewById(R.id.majorText);
         classesList= (ListView) findViewById(R.id.classes);
@@ -155,6 +155,21 @@ public class Profile extends AppCompatActivity
             }
         });
 
+        initImageLoader();
+        setProfileImage();
+
+    }
+    private void initImageLoader(){
+        UniversalImageLoader universalImageLoader = new UniversalImageLoader(this);
+        ImageLoader imageLoader = ImageLoader.getInstance();
+        imageLoader.init(universalImageLoader.getConfig());
+    }
+
+    private void setProfileImage(){
+        if(imguri == null){
+            String imgURL = "https://wallpaperstream.com/wallpapers/full/tulips/Tulips-Flowers-Bouquet-HD-Wallpaper.jpg";
+            UniversalImageLoader.setImage(imgURL, profilePicture, null, "");
+        }
 
     }
 
