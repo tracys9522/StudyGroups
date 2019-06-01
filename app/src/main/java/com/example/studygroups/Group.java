@@ -15,6 +15,7 @@ public class Group implements Serializable {
     String key;
     String creator;
     ArrayList<String> group_member = new ArrayList<>();
+    ArrayList<String> images = new ArrayList<>();
 
     public Group(){}
 
