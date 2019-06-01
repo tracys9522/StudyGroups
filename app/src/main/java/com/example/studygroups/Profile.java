@@ -88,7 +88,8 @@ public class Profile extends AppCompatActivity
 
         groupsList.setAdapter(groupsAdapter);
 
-        Query query = collection.whereEqualTo("username","thackson@scu.edu");
+        String email = getIntent().getStringExtra("username");
+        Query query = collection.whereEqualTo("username",email);
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {

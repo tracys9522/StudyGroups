@@ -1,9 +1,13 @@
 package com.example.studygroups;
 
 import android.content.Intent;
+import android.icu.text.Collator;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,80 +17,68 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.CheckBox;
-import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
 
-import com.google.firebase.firestore.DocumentReference;
+import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.IdpResponse;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
+import java.util.List;
 
-public class CreateGroup extends AppCompatActivity
+public class PostLoginActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    FirebaseFirestore reff;
-    static HashMap<String, Integer> group_name_map = new HashMap<>();
+    private ViewPager myslideViewPager;
+    private LinearLayout fieldLayout;
+    private TextView active_group_text;
+    private TextView closed_group_text;
+    ListView active_list;
+
+
+    DrawerLayout drawer;
+    NavigationView navigationView;
+    static String username;
+    Toolbar toolbar=null;
+    int RC_SIGN_IN = 123;
+    UserProfile current_user;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    CollectionReference collection = db.collection("User Profile");
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_group);
+        setContentView(R.layout.activity_postlogin);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        reff = FirebaseFirestore.getInstance();
-        CheckBox professor_checkbox = findViewById(R.id.professor_checkbox);
-        CheckBox type_checkbox = findViewById(R.id.type_checkbox);
-        CheckBox course_no_checkbox = findViewById(R.id.course_number_checkbox);
-        CheckBox department_checkbox = findViewById(R.id.department_checkbox);
+//        setSupportActionBar(toolbar);
 
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-    }
 
-    public void addGroup(View view){
-        String group_name = ((EditText) findViewById(R.id.group_name)).getText().toString();
-        String type = ((EditText) findViewById(R.id.type_input)).getText().toString();
-        String professor = ((EditText) findViewById(R.id.professor_input)).getText().toString();
-        String course_no = ((EditText) findViewById(R.id.course_number_input)).getText().toString();
-        String department = ((EditText) findViewById(R.id.department_input)).getText().toString();
-
-        if(group_name_map.get(group_name) == null){
-            group_name_map.put(group_name, 1);
-        } else {
-            String temp = group_name;
-            group_name = group_name + " (" + Integer.toString(group_name_map.get(group_name)) + ")";
-            group_name_map.put(temp, group_name_map.get(temp) + 1);
+        ViewPager viewPager = findViewById(R.id.view_pager);
+        viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
+        tabLayout.setupWithViewPager(viewPager);
+        String original_activity = getIntent().getStringExtra("original_activity");
+        if(original_activity.equals("main")) {
+            current_user = (UserProfile) getIntent().getSerializableExtra("current_user");
+            username = current_user.getUsername();
         }
-
-        System.out.println(group_name);
-
-        //TODO
-        //get creator
-        String creator = PostLoginActivity.username;
-
-        Group g = new Group(group_name, type, department, course_no, professor,creator);
-        DocumentReference addedDocRef = reff.collection("Active Groups").document();
-        String key = addedDocRef.getId();
-        g.setKey(key);
-
-        addedDocRef.set(g);
-        Intent myIntent = new Intent(this, PostLoginActivity.class);
-        myIntent.putExtra("original_activity", "create");
-        startActivity(myIntent);
-    }
-
-
-    public void cancel(View view){
-        Intent myIntent = new Intent(this, PostLoginActivity.class);
-        myIntent.putExtra("original_activity", "create");
-        startActivity(myIntent);
     }
 
     @Override
@@ -130,6 +122,7 @@ public class CreateGroup extends AppCompatActivity
         switch (id){
             case R.id.nav_profile:
                 Intent p = new Intent(this, Profile.class);
+                p.putExtra("username", current_user.getUsername());
                 startActivity(p);
                 break;
             case R.id.nav_search:
@@ -145,11 +138,11 @@ public class CreateGroup extends AppCompatActivity
                 startActivity(cg);
                 break;
             case R.id.nav_groups:
-                Intent g = new Intent(this, MainActivity.class);
+                Intent g = new Intent(this, PostLoginActivity.class);
                 startActivity(g);
                 break;
             case R.id.nav_logout:
-                Intent l = new Intent(this, MainActivity.class);
+                Intent l = new Intent(this, PostLoginActivity.class);
                 startActivity(l);
                 break;
         }
@@ -158,4 +151,7 @@ public class CreateGroup extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
+
 }

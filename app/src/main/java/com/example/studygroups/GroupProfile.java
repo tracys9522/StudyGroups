@@ -136,15 +136,22 @@ public class GroupProfile extends AppCompatActivity {
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DocumentReference addedDocRef = close_collection.document();
-                String key = addedDocRef.getId();
-                target.setKey(key);
-                addedDocRef.set(target);
-                collection.document(groupDocument.getId()).delete();
-                Intent intent = new Intent(GroupProfile.this, MainActivity.class);
-                startActivity(intent);
+                String the_creator = creator.getText().toString();
+                if(!PostLoginActivity.username.equals(the_creator)) {
+                    Toast.makeText(GroupProfile.this, "Only the creator can close this group", Toast.LENGTH_LONG).show();
+                } else {
+                    DocumentReference addedDocRef = close_collection.document();
+                    String key = addedDocRef.getId();
+                    target.setKey(key);
+                    addedDocRef.set(target);
+                    collection.document(groupDocument.getId()).delete();
+                    Intent intent = new Intent(GroupProfile.this, PostLoginActivity.class);
+                    intent.putExtra("original_activity", "not main");
+                    startActivity(intent);
+                }
             }
         });
+
 
     }
 

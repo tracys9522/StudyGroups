@@ -2,9 +2,10 @@ package com.example.studygroups;
 
 import android.net.Uri;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class UserProfile {
+public class UserProfile implements Serializable {
 
     String username;
     String display_name;
@@ -15,12 +16,12 @@ public class UserProfile {
 
 
     public UserProfile() {
+        this.username = "";
     }
 
-    public UserProfile(String username, String display_name, String major) {
+    public UserProfile(String username, String display_name) {
         this.username = username;
         this.display_name = display_name;
-        this.major = major;
         this.profilePicture = null;
         classes = new ArrayList<String>();
         groups = new ArrayList<String>();
@@ -47,5 +48,9 @@ public class UserProfile {
             this.classes.add(i, classes.get(i));
         }
         groups = new ArrayList<String>();
+    }
+
+    public String getUsername(){
+        return this.username;
     }
 }
