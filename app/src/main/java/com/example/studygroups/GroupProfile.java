@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -96,7 +95,6 @@ public class GroupProfile extends AppCompatActivity {
             }
         });
 
-
         //join group activity
         //TODO
 
@@ -160,7 +158,9 @@ public class GroupProfile extends AppCompatActivity {
             }
         });
 
+        //if creator or group member set visible
         Button upload = findViewById(R.id.upload);
+
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
