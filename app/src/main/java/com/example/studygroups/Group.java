@@ -63,4 +63,10 @@ public class Group implements Serializable {
         pending_invitations.add(user);
     }
 
-}
+    public void addGroupMember(String user){group_member.add(user);
+    pending_invitations.remove(user);}
+
+    public void removePendingInvitation(String user){pending_invitations.remove(user);}
+
+
+    }

@@ -1,12 +1,16 @@
 package com.example.studygroups;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 public class PendingInvitationsActivity extends AppCompatActivity {
     private ListView listview;
+    Group g;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -14,7 +18,7 @@ public class PendingInvitationsActivity extends AppCompatActivity {
         listview = findViewById(R.id.pending_invitations);
 
         Bundle b = getIntent().getExtras();
-        Group g = (Group) b.getSerializable("group");
+        g = (Group) b.getSerializable("group");
 
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
@@ -24,8 +28,19 @@ public class PendingInvitationsActivity extends AppCompatActivity {
 
         listview.setAdapter(arrayAdapter);
 
-
-
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String listItem = (String) listview.getItemAtPosition(position);
+                Intent intent = new Intent(PendingInvitationsActivity.this, Profile.class);
+                intent.putExtra("showButtons", "not main");
+                intent.putExtra("username", listItem);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("group", g);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
 
     }
 

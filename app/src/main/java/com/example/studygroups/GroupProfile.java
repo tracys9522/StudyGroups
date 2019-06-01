@@ -144,6 +144,7 @@ public class GroupProfile extends AppCompatActivity {
                                         }
                                     }
 
+
                                     target.request2join(PostLoginActivity.username);
                                     collection.document(groupDocument.getId()).update("pending_invitations", target.pending_invitations);
                                     Toast.makeText(GroupProfile.this, "You have requested the creator's permission", Toast.LENGTH_LONG).show();
