@@ -1,5 +1,7 @@
 package com.example.studygroups;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
@@ -25,11 +27,11 @@ public class GroupProfile extends AppCompatActivity {
 
     TextView name, type, department, course_no, professor,creator;
     String key;
-    String currentUser;
     String newGroup;
 
     ArrayList<String> currentMembers = new ArrayList<>();
     ArrayList<String> currentGroups = new ArrayList<>();
+    Group target;
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference collection = db.collection("Active Groups");
@@ -51,7 +53,7 @@ public class GroupProfile extends AppCompatActivity {
         creator = findViewById(R.id.creator);
 
         Bundle bundle = getIntent().getExtras();
-        final Group target = (Group) bundle.getSerializable("group");
+        target = (Group) bundle.getSerializable("group");
 
         name.setText(target.getName());
         type.setText(target.getType());
@@ -61,7 +63,6 @@ public class GroupProfile extends AppCompatActivity {
         creator.setText(target.creator);
 
         currentMembers = target.group_member;
-        currentUser = target.creator;
         key = target.getKey();
         newGroup = target.name;
 
@@ -78,7 +79,7 @@ public class GroupProfile extends AppCompatActivity {
             }
         });
 
-        Query searchUser = collectionProfile.whereEqualTo("username",currentUser);
+        Query searchUser = collectionProfile.whereEqualTo("username", PostLoginActivity.username);
         searchUser.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -97,28 +98,60 @@ public class GroupProfile extends AppCompatActivity {
         //TODO
 
         Button join = findViewById(R.id.join);
+        if(target.creator.equals(PostLoginActivity.username)){
+            join.setText("View Pending Invitations");
+        }
         join.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 boolean found = false;
                 for(int i= 0; i < currentMembers.size(); ++i) {
-                    if (currentMembers.get(i).equals(currentUser)) {
+                    if (currentMembers.get(i).equals(PostLoginActivity.username)) {
                         found = true;
+                        break;
                     }
                 }
-                if(found){
-                    Toast.makeText(GroupProfile.this, "You have already joined this group!", Toast.LENGTH_LONG).show();
+
+                if(found && !target.creator.equals(PostLoginActivity.username)){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(GroupProfile.this);
+                    builder.setMessage("You have already joined this group!");
+                    builder.show();
+                } else if (target.creator.equals(PostLoginActivity.username)){
+                    Intent intent = new Intent(GroupProfile.this, PendingInvitationsActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("group", target);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                 }
                 else{
-                    currentMembers.add(currentUser);
-                    currentGroups.add(newGroup);
+//                    currentMembers.add(currentUser);
+//                    currentGroups.add(newGroup);
+//                    collection.document(groupDocument.getId()).update("group_member", currentMembers);
+                    Query searchGroup = collection.whereEqualTo("name",target.getName());
+                    searchGroup.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    groupDocument = document.getReference();
+                                    Group g = document.toObject(Group.class);
+                                    for(String s: g.pending_invitations){
+                                        if(s.equals(PostLoginActivity.username)){
+                                            AlertDialog.Builder builder = new AlertDialog.Builder(GroupProfile.this);
+                                            builder.setMessage("You have already joined this group!");
+                                            builder.show();
+                                            return;
+                                        }
+                                    }
 
-                    System.out.println("PRINT CURRENT MEMEBER SIZE" + currentMembers.size());
-                    System.out.println("PRINT CURERNT GROUPS"+currentGroups.size());
-
-                    collection.document(groupDocument.getId()).update("group_member", currentMembers);
-                    collectionProfile.document(userDocument.getId()).update("groups",currentGroups);
-                    Toast.makeText(GroupProfile.this, "Joined", Toast.LENGTH_LONG).show();
+                                    target.request2join(PostLoginActivity.username);
+                                    collection.document(groupDocument.getId()).update("pending_invitations", target.pending_invitations);
+                                    Toast.makeText(GroupProfile.this, "You have requested the creator's permission", Toast.LENGTH_LONG).show();
+                                    break;
+                                }
+                            }
+                        }
+                    });
                 }
             }
         });
@@ -138,16 +171,27 @@ public class GroupProfile extends AppCompatActivity {
             public void onClick(View v) {
                 String the_creator = creator.getText().toString();
                 if(!PostLoginActivity.username.equals(the_creator)) {
-                    Toast.makeText(GroupProfile.this, "Only the creator can close this group", Toast.LENGTH_LONG).show();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(GroupProfile.this);
+                    builder.setMessage("Only the creator can close this group");
+                    builder.show();
                 } else {
-                    DocumentReference addedDocRef = close_collection.document();
-                    String key = addedDocRef.getId();
-                    target.setKey(key);
-                    addedDocRef.set(target);
-                    collection.document(groupDocument.getId()).delete();
-                    Intent intent = new Intent(GroupProfile.this, PostLoginActivity.class);
-                    intent.putExtra("original_activity", "not main");
-                    startActivity(intent);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(GroupProfile.this);
+                    builder.setMessage("Are you sure you want to close the group?")
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    DocumentReference addedDocRef = close_collection.document();
+                                    String key = addedDocRef.getId();
+                                    target.setKey(key);
+                                    addedDocRef.set(target);
+                                    collection.document(groupDocument.getId()).delete();
+                                    Intent intent = new Intent(GroupProfile.this, PostLoginActivity.class);
+                                    intent.putExtra("original_activity", "not main");
+                                    startActivity(intent);                                }
+                            }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                }
+                            });
+                    builder.show();
                 }
             }
         });

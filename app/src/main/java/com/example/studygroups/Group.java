@@ -15,6 +15,7 @@ public class Group implements Serializable {
     String key;
     String creator;
     ArrayList<String> group_member = new ArrayList<>();
+    ArrayList<String> pending_invitations = new ArrayList<>();
 
     public Group(){}
 
@@ -25,8 +26,8 @@ public class Group implements Serializable {
         this.course_no = course_no;
         this.prof = prof;
         this.key = "";
-        this.active = true;
         this.creator = creator;
+        group_member.add(creator);
     }
 
     public String getType() {
@@ -56,6 +57,10 @@ public class Group implements Serializable {
     public String toString()
     {
         return this.name + "\n" + department + course_no + "-" +prof;
+    }
+
+    public void request2join(String user){
+        pending_invitations.add(user);
     }
 
 }

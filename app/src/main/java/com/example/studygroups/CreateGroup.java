@@ -83,7 +83,7 @@ public class CreateGroup extends AppCompatActivity
         //get creator
         String creator = PostLoginActivity.username;
 
-        g = new Group(group_name, type, department, course_no, professor,creator);
+        g = new Group(group_name, type, department, course_no, professor, creator);
         DocumentReference addedDocRef = reff.collection("Active Groups").document();
         String key = addedDocRef.getId();
         g.setKey(key);
@@ -183,7 +183,7 @@ public class CreateGroup extends AppCompatActivity
                 startActivity(g);
                 break;
             case R.id.nav_logout:
-                Intent l = new Intent(this, MainActivity.class);
+                Intent l = new Intent(this, PostLoginActivity.class);
                 l.putExtra("original_activity", "not main");
                 startActivity(l);
                 break;
