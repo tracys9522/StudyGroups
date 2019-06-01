@@ -40,6 +40,8 @@ public class GroupProfile extends AppCompatActivity {
     DocumentReference groupDocument;
     DocumentReference userDocument;
 
+    Bundle bundle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +56,7 @@ public class GroupProfile extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         target = (Group) bundle.getSerializable("group");
+
 
         name.setText(target.getName());
         type.setText(target.getType());
@@ -161,7 +164,11 @@ public class GroupProfile extends AppCompatActivity {
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Bundle bundle2 = new Bundle();
+                bundle2.putSerializable("group",target);
+
                 Intent intent = new Intent(GroupProfile.this, UploadImage.class);
+                intent.putExtras(bundle2);
                 startActivity(intent);
             }
         });
