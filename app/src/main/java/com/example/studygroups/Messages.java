@@ -25,7 +25,6 @@ public class Messages extends AppCompatActivity
         setSupportActionBar(toolbar);
 
 
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -92,11 +91,13 @@ public class Messages extends AppCompatActivity
                 startActivity(cg);
                 break;
             case R.id.nav_groups:
-                Intent g = new Intent(this, MainActivity.class);
+                Intent g = new Intent(this, PostLoginActivity.class);
+                g.putExtra("original_activity", "this");
                 startActivity(g);
                 break;
             case R.id.nav_logout:
-                Intent l = new Intent(this, MainActivity.class);
+                Intent l = new Intent(this, PostLoginActivity.class);
+                l.putExtra("original_activity", "this");
                 startActivity(l);
                 break;
         }

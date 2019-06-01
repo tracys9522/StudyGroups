@@ -84,7 +84,7 @@ public class Profile extends AppCompatActivity
         groupsAdapter = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_list_item_1,
-                groups );
+                PostLoginActivity.current_user.groups );
 
         groupsList.setAdapter(groupsAdapter);
 

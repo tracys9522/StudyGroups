@@ -51,7 +51,7 @@ public class PostLoginActivity extends AppCompatActivity
     static String username;
     Toolbar toolbar=null;
     int RC_SIGN_IN = 123;
-    UserProfile current_user;
+    static UserProfile current_user;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference collection = db.collection("User Profile");
 
@@ -139,10 +139,12 @@ public class PostLoginActivity extends AppCompatActivity
                 break;
             case R.id.nav_groups:
                 Intent g = new Intent(this, PostLoginActivity.class);
+                g.putExtra("original_activity", "this");
                 startActivity(g);
                 break;
             case R.id.nav_logout:
                 Intent l = new Intent(this, PostLoginActivity.class);
+                l.putExtra("original_activity", "this");
                 startActivity(l);
                 break;
         }

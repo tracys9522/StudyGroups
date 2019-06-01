@@ -23,8 +23,8 @@ public class UserProfile implements Serializable {
         this.username = username;
         this.display_name = display_name;
         this.profilePicture = null;
-        classes = new ArrayList<String>();
-        groups = new ArrayList<String>();
+        this.classes = new ArrayList<String>();
+        this.groups = new ArrayList<String>();
     }
 
     public UserProfile(String username, String display_name, String major, ArrayList<String> classes) {
@@ -52,5 +52,9 @@ public class UserProfile implements Serializable {
 
     public String getUsername(){
         return this.username;
+    }
+
+    public void addGroup(Group g){
+        this.groups.add(g.getName());
     }
 }
