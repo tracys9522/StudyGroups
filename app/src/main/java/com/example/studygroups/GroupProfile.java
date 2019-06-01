@@ -173,6 +173,9 @@ public class GroupProfile extends AppCompatActivity {
             }
         });
 
+
+
+
         Button close = findViewById(R.id.close);
         close.setOnClickListener(new View.OnClickListener() {
             @Override
