@@ -114,7 +114,7 @@ public class UploadImage extends AppCompatActivity {
     }
 
     private void FileUploader(){
-        StorageReference filepath = FirebaseStorage.getInstance().getReferenceFromUrl("gs://grouppager.appspot.com/").child("Files");
+        StorageReference filepath = FirebaseStorage.getInstance().getReference("Files");
         StorageReference imageRef = filepath.child("image"+new Date().getTime());
         UploadTask uploadTask = imageRef.putBytes(datafile);
         uploadTask
@@ -123,6 +123,16 @@ public class UploadImage extends AppCompatActivity {
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         System.out.println("Image uploaded!");
                         Toast.makeText(UploadImage.this, "Uploaded!", Toast.LENGTH_LONG).show();
+                        Task<Uri> download = taskSnapshot.getStorage().getDownloadUrl();
+                        String image = taskSnapshot.getStorage().getDownloadUrl().toString();
+                        System.out.println("FILEPATH: "+image);
+                        if(download.isSuccessful()){
+                            String filePath = download.getResult().toString();
+                            System.out.println("FILEPATH: "+filePath);
+                        }
+                        else{
+                            System.out.println("DOESNT PRINT");
+                        }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

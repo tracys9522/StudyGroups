@@ -17,8 +17,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class GroupFile extends AppCompatActivity {
 
@@ -53,6 +56,9 @@ public class GroupFile extends AppCompatActivity {
                 }
             }
         });
+
+        StorageReference filepath = FirebaseStorage.getInstance().getReferenceFromUrl("gs://grouppager.appspot.com/").child("Files");
+        StorageReference imageRef = filepath.child("image");
 
         file.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
