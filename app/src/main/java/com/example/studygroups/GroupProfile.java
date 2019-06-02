@@ -256,4 +256,12 @@ public class GroupProfile extends AppCompatActivity {
 
     }
 
+
+    public void onBackPressed() {
+        Intent intent = new Intent(this, PostLoginActivity.class);
+        intent.putExtra("original_activity", "this");
+        startActivity(intent);
+    }
+
+
 }
