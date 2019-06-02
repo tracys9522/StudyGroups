@@ -116,6 +116,7 @@ public class UploadImage extends AppCompatActivity {
     private void FileUploader(){
         StorageReference filepath = FirebaseStorage.getInstance().getReference("Files");
         StorageReference imageRef = filepath.child("image"+new Date().getTime());
+
         UploadTask uploadTask = imageRef.putBytes(datafile);
         uploadTask
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -123,16 +124,9 @@ public class UploadImage extends AppCompatActivity {
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         System.out.println("Image uploaded!");
                         Toast.makeText(UploadImage.this, "Uploaded!", Toast.LENGTH_LONG).show();
-                        Task<Uri> download = taskSnapshot.getStorage().getDownloadUrl();
-                        String image = taskSnapshot.getStorage().getDownloadUrl().toString();
-                        System.out.println("FILEPATH: "+image);
-                        if(download.isSuccessful()){
-                            String filePath = download.getResult().toString();
-                            System.out.println("FILEPATH: "+filePath);
-                        }
-                        else{
-                            System.out.println("DOESNT PRINT");
-                        }
+                        String name = taskSnapshot.getStorage().getName();
+                        System.out.println("FILEPATH: "+name);
+                        save_info(name);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -144,5 +138,9 @@ public class UploadImage extends AppCompatActivity {
                         Toast.makeText(UploadImage.this, "Ops something went wrong...", Toast.LENGTH_LONG).show();
                     }
                 });
+    }
+    private void save_info(String filename){
+        image.add(filename);
+        collection.document(groupDocument.getId()).update("images", image);
     }
 }
