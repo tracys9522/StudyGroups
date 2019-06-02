@@ -48,9 +48,9 @@ public class ActiveGroup extends Fragment {
     DatabaseReference closed_group_database;
     private OnFragmentInteractionListener mListener;
 
-    ArrayList<String> active_keys;
+    ArrayList<String> active_keys = new ArrayList<>();
     FirebaseFirestore db;
-    ArrayList<Group> result_group;
+    ArrayList<Group> result_group = new ArrayList<>();
     FloatingActionButton addButton;
 
     public ActiveGroup() {
@@ -83,8 +83,6 @@ public class ActiveGroup extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         db = FirebaseFirestore.getInstance();
-        active_keys = new ArrayList<>();
-        result_group = new ArrayList<>();
     }
 
 
@@ -108,7 +106,6 @@ public class ActiveGroup extends Fragment {
 
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
                 active_keys.clear();
-                ArrayList<String> temp = new ArrayList<>();
                 for (DocumentSnapshot snapshot : documentSnapshots) {
                     if(snapshot.get("name") != null) {
                         active_keys.add((String) snapshot.get("name"));
@@ -149,6 +146,10 @@ public class ActiveGroup extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+    }
+
+    public void onDetach() {
+        super.onDetach();
     }
 
 

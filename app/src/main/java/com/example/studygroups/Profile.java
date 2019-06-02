@@ -53,6 +53,7 @@ public class Profile extends AppCompatActivity
     private ListView classesList;
     private ListView groupsList;
     private ImageView profilePicture;
+    private String showButtons;
 
     private ArrayAdapter<String> groupsAdapter;
     private ArrayAdapter<String> classesAdapter;
@@ -103,7 +104,7 @@ public class Profile extends AppCompatActivity
         groupsList.setAdapter(groupsAdapter);
 
         email = getIntent().getStringExtra("username");
-        String showButtons = getIntent().getStringExtra("showButtons");
+        showButtons = getIntent().getStringExtra("showButtons");
         Bundle bundle = getIntent().getExtras();
         try {
             group = (Group) bundle.getSerializable("group");
@@ -287,6 +288,14 @@ public class Profile extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+        if(showButtons != null){
+            Intent intent = new Intent(Profile.this, PendingInvitationsActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("group", group);
+            intent.putExtras(bundle);
+            startActivity(intent);
+        }
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
