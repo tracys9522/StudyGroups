@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -231,6 +232,10 @@ public class Profile extends AppCompatActivity
 
             }
         });
+        if(classes.size() == 0){
+            LinearLayout classView = (LinearLayout) findViewById(R.id.classesView);
+            classView.setVisibility(View.GONE);
+        }
 
 
     }

@@ -45,7 +45,7 @@ public class PendingInvitationsActivity extends AppCompatActivity {
         });
         if(g.pending_invitations.size() == 0){
             TextView message = (TextView) findViewById(R.id.noPendingMessage);
-            message.setCursorVisible(true);
+            message.setVisibility(View.VISIBLE);
         }
 
     }
