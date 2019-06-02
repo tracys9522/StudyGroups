@@ -11,14 +11,21 @@ public class Group implements Serializable {
     String department;
     String course_no;
     String prof;
-    boolean active;
     String key;
     String creator;
     ArrayList<String> group_member = new ArrayList<>();
     ArrayList<String> pending_invitations = new ArrayList<>();
     ArrayList<String> images = new ArrayList<>();
 
-    public Group(){}
+    public Group(){
+        this.name = "";
+        this.type = "";
+        this.department = "";
+        this.course_no = "";
+        this.prof = "";
+        this.key = "";
+        this.creator = "";
+    }
 
     public Group(String name, String type, String department, String course_no, String prof, String creator){
         this.name = name;
@@ -32,26 +39,28 @@ public class Group implements Serializable {
     }
 
     public String getType() {
-        return type;
+        return this.type;
     }
 
     public String getDepartment() {
-        return department;
+        return this.department;
     }
 
     public String getCourse_no() {
-        return course_no;
+        return this.course_no;
     }
 
     public String getProf() {
-        return prof;
+        return this.prof;
     }
 
     public String getName(){
-        return name;
+        return this.name;
     }
 
-    public String getKey(){return key;}
+    public String getKey(){return this.key;}
+
+    public String getCreator(){return this.creator;}
 
     public void setKey(final String key){this.key = key;}
 
