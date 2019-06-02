@@ -164,6 +164,7 @@
         android:background="@color/gradientEnd"
         android:padding="3dp"
         android:text="Upload"
+        android:visibility="invisible"
         android:textColor="#FFFFFF"
         android:textSize="16sp" />
 
