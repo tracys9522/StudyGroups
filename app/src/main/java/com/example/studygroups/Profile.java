@@ -28,6 +28,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -314,8 +315,8 @@ public class Profile extends AppCompatActivity
                 startActivity(g);
                 break;
             case R.id.nav_logout:
-                Intent l = new Intent(Profile.this, PostLoginActivity.class);
-                l.putExtra("original_activity", "not main");
+                FirebaseAuth.getInstance().signOut();
+                Intent l = new Intent(this, MainActivity.class);
                 startActivity(l);
                 break;
         }

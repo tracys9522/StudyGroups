@@ -143,8 +143,8 @@ public class PostLoginActivity extends AppCompatActivity
                 startActivity(g);
                 break;
             case R.id.nav_logout:
-                Intent l = new Intent(this, PostLoginActivity.class);
-                l.putExtra("original_activity", "this");
+                FirebaseAuth.getInstance().signOut();
+                Intent l = new Intent(this, MainActivity.class);
                 startActivity(l);
                 break;
         }

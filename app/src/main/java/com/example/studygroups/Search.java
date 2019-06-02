@@ -17,6 +17,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class Search extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, basic_search.OnFragmentInteractionListener, adv_search.OnFragmentInteractionListener {
 
@@ -134,8 +136,8 @@ public class Search extends AppCompatActivity
                 startActivity(g);
                 break;
             case R.id.nav_logout:
-                Intent l = new Intent(this, PostLoginActivity.class);
-                l.putExtra("original_activity", "not main");
+                FirebaseAuth.getInstance().signOut();
+                Intent l = new Intent(this, MainActivity.class);
                 startActivity(l);
                 break;
         }

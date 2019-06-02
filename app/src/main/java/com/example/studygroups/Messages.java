@@ -14,6 +14,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class Messages extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -96,8 +98,8 @@ public class Messages extends AppCompatActivity
                 startActivity(g);
                 break;
             case R.id.nav_logout:
-                Intent l = new Intent(this, PostLoginActivity.class);
-                l.putExtra("original_activity", "this");
+                FirebaseAuth.getInstance().signOut();
+                Intent l = new Intent(this, MainActivity.class);
                 startActivity(l);
                 break;
         }
