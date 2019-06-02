@@ -113,6 +113,7 @@ public class Search extends AppCompatActivity
         switch (id){
             case R.id.nav_profile:
                 Intent p = new Intent(this, Profile.class);
+                p.putExtra("username", PostLoginActivity.username);
                 startActivity(p);
                 break;
             case R.id.nav_search:
@@ -128,11 +129,13 @@ public class Search extends AppCompatActivity
                 startActivity(cg);
                 break;
             case R.id.nav_groups:
-                Intent g = new Intent(this, MainActivity.class);
+                Intent g = new Intent(this, PostLoginActivity.class);
+                g.putExtra("original_activity", "not main");
                 startActivity(g);
                 break;
             case R.id.nav_logout:
-                Intent l = new Intent(this, MainActivity.class);
+                Intent l = new Intent(this, PostLoginActivity.class);
+                l.putExtra("original_activity", "not main");
                 startActivity(l);
                 break;
         }

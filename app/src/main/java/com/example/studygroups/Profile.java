@@ -101,7 +101,11 @@ public class Profile extends AppCompatActivity
         email = getIntent().getStringExtra("username");
         String showButtons = getIntent().getStringExtra("showButtons");
         Bundle bundle = getIntent().getExtras();
-        group = (Group) bundle.getSerializable("group");
+        try {
+            group = (Group) bundle.getSerializable("group");
+        }catch (java.lang.NullPointerException exception) {
+            group = null;
+        }
 
         if(showButtons == null){
             acceptButton.setVisibility(View.GONE);
@@ -272,6 +276,7 @@ public class Profile extends AppCompatActivity
         switch (id){
             case R.id.nav_profile:
                 Intent p = new Intent(Profile.this, Profile.class);
+                p.putExtra("username", PostLoginActivity.username);
                 startActivity(p);
                 break;
             case R.id.nav_search:
