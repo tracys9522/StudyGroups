@@ -160,6 +160,14 @@ public class GroupProfile extends AppCompatActivity {
 
         //if creator or group member set visible
         Button upload = findViewById(R.id.upload);
+        if(target.creator.equals(PostLoginActivity.username)){
+            upload.setVisibility(View.VISIBLE);
+        }
+        for(int i = 0; i < currentMembers.size(); i++){
+            if(currentMembers.get(i).equals(PostLoginActivity.username)){
+                upload.setVisibility(View.VISIBLE);
+            }
+        }
 
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
