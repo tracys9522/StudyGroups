@@ -139,17 +139,38 @@
         </LinearLayout>
     </LinearLayout>
 
-    <Button
-        android:id="@+id/join"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@color/colorAccent"
-        android:padding="3dp"
-        android:text="Join Group"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/join"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorAccent"
+            android:padding="3dp"
+            android:text="Join Group"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginLeft="70dp"/>
+
+        <Button
+            android:id="@+id/groupMembers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorAccent"
+            android:padding="3dp"
+            android:text="Current Members"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginLeft="30dp"/>
+
+    </LinearLayout>
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -171,6 +192,7 @@
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:visibility="visible"
+            android:textStyle="bold"
             android:layout_marginLeft="80dp"/>
 
         <Button
@@ -182,8 +204,9 @@
             android:text="Close Group"
             android:textColor="#FFFFFF"
             android:textSize="16dp"
+            android:textStyle="bold"
             android:layout_alignRight="@+id/upload"
-            android:layout_marginLeft="35dp"/>
+            android:layout_marginLeft="20dp"/>
 
 
     </LinearLayout>

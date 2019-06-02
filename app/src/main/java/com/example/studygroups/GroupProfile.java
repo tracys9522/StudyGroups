@@ -1,6 +1,7 @@
 package com.example.studygroups;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -44,6 +45,9 @@ public class GroupProfile extends AppCompatActivity {
     String from_closed;
     Bundle bundle;
 
+    Button groupMembers;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +59,11 @@ public class GroupProfile extends AppCompatActivity {
         course_no = findViewById(R.id.set_course);
         professor = findViewById(R.id.set_professor);
         creator = findViewById(R.id.creator);
+
+        groupMembers = (Button) findViewById(R.id.groupMembers);
+
+
+
 
         Bundle bundle = getIntent().getExtras();
         target = (Group) bundle.getSerializable("group");
@@ -103,7 +112,7 @@ public class GroupProfile extends AppCompatActivity {
 
         Button join = findViewById(R.id.join);
         if (from_closed == null && target.creator.equals(PostLoginActivity.username)) {
-            join.setText("View Pending Invitations");
+            join.setText("Pending Invitations");
         } else if (from_closed != null && target.creator.equals(PostLoginActivity.username)) {
             join.setText("Make Group Active");
         } else if (from_closed != null) {
@@ -111,6 +120,37 @@ public class GroupProfile extends AppCompatActivity {
             join.setEnabled(false);
         }
 
+
+        groupMembers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    if(currentMembers.size() >0){
+                        String[] members =  currentMembers.toArray(new String[0]);
+                        new AlertDialog.Builder(GroupProfile.this)
+                                .setTitle(newGroup + " Members")
+                                .setItems(members, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent intent = new Intent(GroupProfile.this, Profile.class);
+                                        intent.putExtra("username", currentMembers.get(which));
+                                        Bundle bundle = new Bundle();
+                                        intent.putExtras(bundle);
+                                        startActivity(intent);
+
+                                    }
+                                })
+                                .setNegativeButton("close", null)
+                                .setIcon(R.drawable.logo)
+                                .show();
+                    } else{
+                        new AlertDialog.Builder(GroupProfile.this)
+                                .setTitle(name + "Members")
+                                .setMessage("There are no current members")
+                                .setNegativeButton("close", null)
+                                .setIcon(android.R.drawable.ic_dialog_info)
+                                .show();
+                    }
+            }
+        });
 
         join.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -206,6 +246,13 @@ public class GroupProfile extends AppCompatActivity {
             );
             params.setMargins(270, 0, 0, 0);
             close.setLayoutParams(params);
+            Button j = (Button) findViewById(R.id.join);
+            LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            params2.setMargins(20, 0, 0, 0);
+            j.setLayoutParams(params2);
         }
         for (int i = 0; i < currentMembers.size(); i++) {
             if (currentMembers.get(i).equals(PostLoginActivity.username)) {
