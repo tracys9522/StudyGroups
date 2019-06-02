@@ -35,7 +35,7 @@
         <activity android:name=".GroupProfile" />
         <activity
             android:name=".PostLoginActivity"
-            android:label="@string/title_activity_login" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".CreateGroup"
             android:label="@string/title_activity_create_group"

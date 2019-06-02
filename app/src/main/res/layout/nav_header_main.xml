@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="120dp"
-    android:background="@color/colorPrimary"
-    android:layout_marginTop="45dp">
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimary">
 
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="20dp"
         android:id="@+id/studyGroupTitle">
 
         <TextView
@@ -29,25 +28,17 @@
     <RelativeLayout
         android:id="@+id/profileImage"
         android:layout_below="@+id/studyGroupTitle"
-        android:layout_width="78dp"
-        android:layout_height="73dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="3dp"
-        android:background="@drawable/circle_border"
 
         >
 
         <ImageView
-            android:layout_width="73dp"
-            android:layout_height="74dp"
-            android:layout_marginStart="9dp"
-            android:layout_marginLeft="9dp"
-            android:layout_marginTop="9dp"
-            android:layout_marginEnd="9dp"
-            android:layout_marginRight="9dp"
-            android:layout_marginBottom="9dp"
-            android:adjustViewBounds="true"
-            android:background="@drawable/circle"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/logo"
             android:padding="3dp"
             android:scaleType="centerInside" />
 

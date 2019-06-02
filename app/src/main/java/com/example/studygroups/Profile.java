@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -65,6 +66,7 @@ public class Profile extends AppCompatActivity
     Button rejectButton;
     String email;
     Group group;
+    Group target;
     private Uri imguri;
 
     Button editProfile;
@@ -254,6 +256,31 @@ public class Profile extends AppCompatActivity
             LinearLayout classView = (LinearLayout) findViewById(R.id.classesView);
             classView.setVisibility(View.GONE);
         }
+        groupsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String lookup = groups.get(position);
+                Query query = active.whereEqualTo("name",lookup);
+                query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                DocumentReference groupDoc = document.getReference();
+                                target = document.toObject(Group.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("group",target);
+
+                                Intent intent = new Intent(Profile.this, GroupProfile.class);
+                                intent.putExtras(bundle);
+                                startActivity(intent);
+                            }
+                        }
+                    }
+                });
+            }
+        });
 
 
     }
