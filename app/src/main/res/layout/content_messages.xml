@@ -8,16 +8,12 @@
     tools:context=".Messages"
     tools:showIn="@layout/app_bar_messages">
 
-    <TextView
-        android:id="@+id/textView3"
+    <ListView
+        android:id="@+id/retrieve"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Messages"
-        android:layout_alignParentStart="true"
+        android:layout_height="661dp"
         android:layout_alignParentTop="true"
-        android:gravity="center"
-        tools:ignore="MissingContraints"
-        tools:layout_editor_absoluteX="162dp"
-        tools:layout_editor_absoluteY="246dp"
-        />
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="0dp" />
 </RelativeLayout>
