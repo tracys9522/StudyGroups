@@ -141,8 +141,7 @@ public class PostLoginActivity extends AppCompatActivity
                 startActivity(cg);
                 break;
             case R.id.nav_groups:
-                Intent g = new Intent(this, PostLoginActivity.class);
-                g.putExtra("original_activity", "this");
+                Intent g = new Intent(this, MyGroupsActivity.class);
                 startActivity(g);
                 break;
             case R.id.nav_logout:

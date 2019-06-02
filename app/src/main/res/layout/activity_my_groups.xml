@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PendingInvitationsActivity">
-
+    tools:context=".MyGroupsActivity">
 
     <TextView
         android:id="@+id/noPendingMessage"
@@ -19,12 +18,10 @@
         android:textStyle="bold"
         android:visibility="invisible" />
 
-
     <ListView
-        android:id="@+id/pending_invitations"
+        android:id="@+id/current_groups"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="8dp" />
+        android:layout_height="match_parent"/>
+
 
 </android.support.constraint.ConstraintLayout>

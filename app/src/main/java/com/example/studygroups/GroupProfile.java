@@ -74,7 +74,7 @@ public class GroupProfile extends AppCompatActivity {
         department.setText(target.getDepartment());
         course_no.setText(target.getCourse_no());
         professor.setText(target.getProf());
-        creator.setText(target.creator);
+        creator.setText(target.getCreator());
 
         currentMembers = target.group_member;
         key = target.getKey();
