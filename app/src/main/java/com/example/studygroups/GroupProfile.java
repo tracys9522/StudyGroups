@@ -270,7 +270,7 @@ public class GroupProfile extends AppCompatActivity {
                 close.setLayoutParams(params);
             }
         }
-        if(visible){
+        if(!visible){
             upload.setVisibility(View.GONE);
         }
 
