@@ -30,6 +30,7 @@ public class GroupFile extends AppCompatActivity {
     ArrayList<String> currentFiles = new ArrayList<>();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference collection = db.collection("Active Groups");
+    ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,7 @@ public class GroupFile extends AppCompatActivity {
         String group = (String) bundle.get("group");
 
         file = findViewById(R.id.file);
+        imageView = findViewById(R.id.file_image);
 
         Query searchGroup = collection.whereEqualTo("name", group);
         searchGroup.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -57,19 +59,17 @@ public class GroupFile extends AppCompatActivity {
             }
         });
 
-        StorageReference filepath = FirebaseStorage.getInstance().getReferenceFromUrl("gs://grouppager.appspot.com/").child("Files");
-        StorageReference imageRef = filepath.child("image");
-
         file.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                /*
-                ImageView imageView = findViewById(R.id.file_image);
+                String filename = currentFiles.get(position);
+                StorageReference filepath = FirebaseStorage.getInstance().getReference("Files").child(filename);
+
                 GlideApp.with(this)
-                        .load(storageReference)
+                        .load(filepath)
                         .into(imageView);
-                */
+
             }
         });
 

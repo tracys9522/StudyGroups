@@ -237,7 +237,7 @@ public class GroupProfile extends AppCompatActivity {
 
         //TODO
         //FIX LAYOUT
-        
+
         //if creator or group member set visible
         boolean visible = false;
         Button upload = findViewById(R.id.upload);
