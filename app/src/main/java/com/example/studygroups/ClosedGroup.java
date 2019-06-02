@@ -3,6 +3,8 @@ package com.example.studygroups;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class ClosedGroup extends Fragment {
@@ -38,6 +41,7 @@ public class ClosedGroup extends Fragment {
     FirebaseFirestore db;
     ArrayList<String> closed_keys = new ArrayList<>();
     ArrayList<Group> result_group = new ArrayList<>();
+    ListView closed_list;
 
     public ClosedGroup() {
         // Required empty public constructor
@@ -75,12 +79,31 @@ public class ClosedGroup extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         LinearLayout ll = (LinearLayout) inflater.inflate(R.layout.fragment_closed_group, container, false);
-        final ListView closed_list = (ListView) ll.findViewById(R.id.closed_list_view);
+        closed_list = (ListView) ll.findViewById(R.id.closed_list_view);
+
+        closed_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Group target = result_group.get(position);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("group",target);
+                Intent intent = new Intent(getActivity(), GroupProfile.class);
+                intent.putExtra("from_closed", "yes");
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+
+        return ll;
+    }
+
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         db.collection("Closed Groups").addSnapshotListener(new EventListener<QuerySnapshot>() {
 
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
                 closed_keys.clear();
-                ArrayList<String> temp = new ArrayList<>();
                 for (DocumentSnapshot snapshot : documentSnapshots) {
                     if(snapshot.get("name") != null) {
                         closed_keys.add((String) snapshot.get("name"));
@@ -94,24 +117,7 @@ public class ClosedGroup extends Fragment {
             }
         });
 
-
-//        c.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Group target = result_group.get(position);
-//                Bundle bundle = new Bundle();
-//                bundle.putSerializable("group",target);
-//
-//                Intent intent = new Intent(getActivity(), GroupProfile.class);
-//                intent.putExtras(bundle);
-//                startActivity(intent);
-//            }
-//        });
-
-
-        return ll;
     }
-
 
     @Override
     public void onAttach(Context context) {

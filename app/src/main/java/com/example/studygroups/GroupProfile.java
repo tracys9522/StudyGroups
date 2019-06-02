@@ -40,7 +40,7 @@ public class GroupProfile extends AppCompatActivity {
     CollectionReference close_collection = db.collection("Closed Groups");
     DocumentReference groupDocument;
     DocumentReference userDocument;
-
+    String from_closed;
     Bundle bundle;
 
     @Override
@@ -57,7 +57,7 @@ public class GroupProfile extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         target = (Group) bundle.getSerializable("group");
-
+        from_closed = (String) getIntent().getExtras().get("from_closed");
 
         name.setText(target.getName());
         type.setText(target.getType());
@@ -101,9 +101,20 @@ public class GroupProfile extends AppCompatActivity {
         //TODO
 
         Button join = findViewById(R.id.join);
-        if(target.creator.equals(PostLoginActivity.username)){
+        if(from_closed == null && target.creator.equals(PostLoginActivity.username)){
             join.setText("View Pending Invitations");
         }
+        else if(from_closed != null && target.creator.equals(PostLoginActivity.username)){
+            join.setText("Make Group Active");
+        } else if(from_closed != null){
+            join.setVisibility(View.GONE);
+            join.setEnabled(false);
+        }
+
+
+
+
+
         join.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,7 +125,6 @@ public class GroupProfile extends AppCompatActivity {
                         break;
                     }
                 }
-
                 if(found && !target.creator.equals(PostLoginActivity.username)){
                     AlertDialog.Builder builder = new AlertDialog.Builder(GroupProfile.this);
                     builder.setMessage("You have already joined this group!");
@@ -125,6 +135,38 @@ public class GroupProfile extends AppCompatActivity {
                     bundle.putSerializable("group", target);
                     intent.putExtras(bundle);
                     startActivity(intent);
+                } else if (target.creator.equals(PostLoginActivity.username) && from_closed != null){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(GroupProfile.this);
+                    builder.setMessage("Are you sure you want to make the group active?")
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+                                public void onClick(DialogInterface dialog, int id) {
+                                    for (String member : target.group_member) {
+                                        Query searchGroup = collectionProfile.whereEqualTo("name", member);
+                                        searchGroup.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                                        UserProfile user = document.toObject(UserProfile.class);
+                                                        user.groups.add(target.getName());
+                                                        collectionProfile.document(document.getId()).update("groups", user.groups);
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    }
+                                    DocumentReference addedDocRef = collection.document();
+                                    String key = addedDocRef.getId();
+//                                    target.group_member.clear();
+                                    target.setKey(key);
+                                    addedDocRef.set(target);
+                                    close_collection.document(groupDocument.getId()).delete();
+                                    Intent intent = new Intent(GroupProfile.this, PostLoginActivity.class);
+                                    intent.putExtra("original_activity", "not main");
+                                    startActivity(intent);
+                                }
+                            });
                 }
                 else{
 //                    currentMembers.add(currentUser);
@@ -147,7 +189,6 @@ public class GroupProfile extends AppCompatActivity {
                                         }
                                     }
 
-
                                     target.request2join(PostLoginActivity.username);
                                     collection.document(groupDocument.getId()).update("pending_invitations", target.pending_invitations);
                                     Toast.makeText(GroupProfile.this, "You have requested the creator's permission", Toast.LENGTH_LONG).show();
@@ -164,10 +205,12 @@ public class GroupProfile extends AppCompatActivity {
         Button upload = findViewById(R.id.upload);
         if(target.creator.equals(PostLoginActivity.username)){
             upload.setVisibility(View.VISIBLE);
+            upload.setEnabled(false);
         }
         for(int i = 0; i < currentMembers.size(); i++){
             if(currentMembers.get(i).equals(PostLoginActivity.username)){
                 upload.setVisibility(View.VISIBLE);
+                upload.setEnabled(false);
             }
         }
 
@@ -221,7 +264,7 @@ public class GroupProfile extends AppCompatActivity {
                                     }
                                     DocumentReference addedDocRef = close_collection.document();
                                     String key = addedDocRef.getId();
-                                    target.group_member.clear();
+//                                    target.group_member.clear();
                                     target.setKey(key);
                                     addedDocRef.set(target);
                                     collection.document(groupDocument.getId()).delete();
@@ -238,6 +281,13 @@ public class GroupProfile extends AppCompatActivity {
             }
         });
 
+
+        if(from_closed != null){
+            close.setVisibility(View.GONE);
+            upload.setVisibility(View.GONE);
+            close.setEnabled(false);
+            upload.setEnabled(false);
+        }
 
     }
 

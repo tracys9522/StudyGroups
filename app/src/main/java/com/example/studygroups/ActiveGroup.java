@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -52,6 +54,7 @@ public class ActiveGroup extends Fragment {
     FirebaseFirestore db;
     ArrayList<Group> result_group = new ArrayList<>();
     FloatingActionButton addButton;
+    ListView active_list;
 
     public ActiveGroup() {
         // Required empty public constructor
@@ -92,7 +95,7 @@ public class ActiveGroup extends Fragment {
 
         // Inflate the layout for this fragment
         LinearLayout ll = (LinearLayout) inflater.inflate(R.layout.fragment_active_group, container, false);
-        final ListView active_list = (ListView) ll.findViewById(R.id.active_list_view);
+        active_list = (ListView) ll.findViewById(R.id.active_list_view);
         addButton = ll.findViewById(R.id.add_button);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,6 +105,43 @@ public class ActiveGroup extends Fragment {
             }
         });
 
+//        db.collection("Active Groups").addSnapshotListener(new EventListener<QuerySnapshot>() {
+//
+//            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+//                active_keys.clear();
+//                for (DocumentSnapshot snapshot : documentSnapshots) {
+//                    if(snapshot.get("name") != null) {
+//                        active_keys.add((String) snapshot.get("name"));
+//                        Group group = snapshot.toObject(Group.class);
+//                        result_group.add(group);
+//                    }
+//                }
+//                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_selectable_list_item, active_keys);
+//                adapter.notifyDataSetChanged();
+//                active_list.setAdapter(adapter);
+//            }
+//        });
+
+
+        active_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Group target = result_group.get(position);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("group",target);
+
+                Intent intent = new Intent(getActivity(), GroupProfile.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+
+
+        return ll;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         db.collection("Active Groups").addSnapshotListener(new EventListener<QuerySnapshot>() {
 
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
@@ -119,21 +159,6 @@ public class ActiveGroup extends Fragment {
             }
         });
 
-        active_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Group target = result_group.get(position);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("group",target);
-
-                Intent intent = new Intent(getActivity(), GroupProfile.class);
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
-
-
-        return ll;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
