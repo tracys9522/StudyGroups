@@ -7,12 +7,13 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.ui.auth.data.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -163,11 +164,25 @@ public class GroupProfile extends AppCompatActivity {
         //if creator or group member set visible
         Button upload = findViewById(R.id.upload);
         if(target.creator.equals(PostLoginActivity.username)){
-            upload.setVisibility(View.VISIBLE);
+            upload.setVisibility(View.GONE);
+            Button close = (Button) findViewById(R.id.close);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(270, 0, 0, 0);
+            close.setLayoutParams(params);
         }
         for(int i = 0; i < currentMembers.size(); i++){
             if(currentMembers.get(i).equals(PostLoginActivity.username)){
-                upload.setVisibility(View.VISIBLE);
+                upload.setVisibility(View.GONE);
+                Button close = (Button) findViewById(R.id.close);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+                params.setMargins(270, 0, 0, 0);
+                close.setLayoutParams(params);
             }
         }
 
