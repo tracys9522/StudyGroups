@@ -125,7 +125,7 @@ public class UploadImage extends AppCompatActivity {
                         Toast.makeText(UploadImage.this, "Uploaded!", Toast.LENGTH_LONG).show();
                         Task<Uri> download = taskSnapshot.getStorage().getDownloadUrl();
                         String image = taskSnapshot.getStorage().getDownloadUrl().toString();
-                        System.out.println("FILEPATH: "+image);
+                        System.out.println("FILEPATH: "+ image);
                         if(download.isSuccessful()){
                             String filePath = download.getResult().toString();
                             System.out.println("FILEPATH: "+filePath);
