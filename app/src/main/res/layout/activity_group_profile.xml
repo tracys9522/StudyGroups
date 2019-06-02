@@ -156,28 +156,44 @@
         android:layout_height="20dp"
         android:orientation="vertical"></LinearLayout>
 
-    <Button
-        android:id="@+id/close"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@color/gradient"
-        android:padding="3dp"
-        android:text="Close Group"
-        android:textColor="#FFFFFF"
-        android:textSize="16dp" />
-    <Button
-        android:id="@+id/upload"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@color/gradientEnd"
-        android:padding="3dp"
-        android:text="Upload"
-        android:layout_marginTop="15dp"
-        android:visibility="invisible"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/upload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/gradient"
+            android:padding="3dp"
+            android:text="Upload"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:visibility="visible"
+            android:layout_marginLeft="80dp"/>
+
+        <Button
+            android:id="@+id/close"
+            android:layout_width="114dp"
+            android:layout_height="47dp"
+            android:background="@color/gradient"
+            android:padding="3dp"
+            android:text="Close Group"
+            android:textColor="#FFFFFF"
+            android:textSize="16dp"
+            android:layout_alignRight="@+id/upload"
+            android:layout_marginLeft="35dp"/>
+
+
+    </LinearLayout>
+
+
+
+
+
+
+
 
 
 

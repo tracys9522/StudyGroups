@@ -7,12 +7,13 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.ui.auth.data.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -26,7 +27,7 @@ import java.util.ArrayList;
 
 public class GroupProfile extends AppCompatActivity {
 
-    TextView name, type, department, course_no, professor,creator;
+    TextView name, type, department, course_no, professor, creator;
     String key;
     String newGroup;
 
@@ -70,7 +71,7 @@ public class GroupProfile extends AppCompatActivity {
         key = target.getKey();
         newGroup = target.name;
 
-        Query search = collection.whereEqualTo("key",target.key);
+        Query search = collection.whereEqualTo("key", target.key);
 
         search.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -101,41 +102,37 @@ public class GroupProfile extends AppCompatActivity {
         //TODO
 
         Button join = findViewById(R.id.join);
-        if(from_closed == null && target.creator.equals(PostLoginActivity.username)){
+        if (from_closed == null && target.creator.equals(PostLoginActivity.username)) {
             join.setText("View Pending Invitations");
-        }
-        else if(from_closed != null && target.creator.equals(PostLoginActivity.username)){
+        } else if (from_closed != null && target.creator.equals(PostLoginActivity.username)) {
             join.setText("Make Group Active");
-        } else if(from_closed != null){
+        } else if (from_closed != null) {
             join.setVisibility(View.GONE);
             join.setEnabled(false);
         }
-
-
-
 
 
         join.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 boolean found = false;
-                for(int i= 0; i < currentMembers.size(); ++i) {
+                for (int i = 0; i < currentMembers.size(); ++i) {
                     if (currentMembers.get(i).equals(PostLoginActivity.username)) {
                         found = true;
                         break;
                     }
                 }
-                if(found && !target.creator.equals(PostLoginActivity.username)){
+                if (found && !target.creator.equals(PostLoginActivity.username)) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(GroupProfile.this);
                     builder.setMessage("You have already joined this group!");
                     builder.show();
-                } else if (target.creator.equals(PostLoginActivity.username)){
+                } else if (target.creator.equals(PostLoginActivity.username) && from_closed == null) {
                     Intent intent = new Intent(GroupProfile.this, PendingInvitationsActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("group", target);
                     intent.putExtras(bundle);
                     startActivity(intent);
-                } else if (target.creator.equals(PostLoginActivity.username) && from_closed != null){
+                } else if (target.creator.equals(PostLoginActivity.username) && from_closed != null) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(GroupProfile.this);
                     builder.setMessage("Are you sure you want to make the group active?")
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -156,23 +153,20 @@ public class GroupProfile extends AppCompatActivity {
                                             }
                                         });
                                     }
+                                    close_collection.document(target.getKey()).delete();
                                     DocumentReference addedDocRef = collection.document();
                                     String key = addedDocRef.getId();
 //                                    target.group_member.clear();
                                     target.setKey(key);
                                     addedDocRef.set(target);
-                                    close_collection.document(groupDocument.getId()).delete();
                                     Intent intent = new Intent(GroupProfile.this, PostLoginActivity.class);
                                     intent.putExtra("original_activity", "not main");
                                     startActivity(intent);
                                 }
                             });
-                }
-                else{
-//                    currentMembers.add(currentUser);
-//                    currentGroups.add(newGroup);
-//                    collection.document(groupDocument.getId()).update("group_member", currentMembers);
-                    Query searchGroup = collection.whereEqualTo("name",target.getName());
+                    builder.show();
+                } else {
+                    Query searchGroup = collection.whereEqualTo("name", target.getName());
                     searchGroup.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -180,8 +174,8 @@ public class GroupProfile extends AppCompatActivity {
                                 for (QueryDocumentSnapshot document : task.getResult()) {
                                     groupDocument = document.getReference();
                                     Group g = document.toObject(Group.class);
-                                    for(String s: g.pending_invitations){
-                                        if(s.equals(PostLoginActivity.username)){
+                                    for (String s : g.pending_invitations) {
+                                        if (s.equals(PostLoginActivity.username)) {
                                             AlertDialog.Builder builder = new AlertDialog.Builder(GroupProfile.this);
                                             builder.setMessage("You have already sent an invitation to this group!");
                                             builder.show();
@@ -203,14 +197,26 @@ public class GroupProfile extends AppCompatActivity {
 
         //if creator or group member set visible
         Button upload = findViewById(R.id.upload);
-        if(target.creator.equals(PostLoginActivity.username)){
-            upload.setVisibility(View.VISIBLE);
-            upload.setEnabled(false);
+        if (target.creator.equals(PostLoginActivity.username)) {
+            upload.setVisibility(View.GONE);
+            Button close = (Button) findViewById(R.id.close);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(270, 0, 0, 0);
+            close.setLayoutParams(params);
         }
-        for(int i = 0; i < currentMembers.size(); i++){
-            if(currentMembers.get(i).equals(PostLoginActivity.username)){
-                upload.setVisibility(View.VISIBLE);
-                upload.setEnabled(false);
+        for (int i = 0; i < currentMembers.size(); i++) {
+            if (currentMembers.get(i).equals(PostLoginActivity.username)) {
+                upload.setVisibility(View.GONE);
+                Button close = (Button) findViewById(R.id.close);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+                params.setMargins(270, 0, 0, 0);
+                close.setLayoutParams(params);
             }
         }
 
@@ -219,7 +225,7 @@ public class GroupProfile extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Bundle bundle2 = new Bundle();
-                bundle2.putSerializable("group",target);
+                bundle2.putSerializable("group", target);
 
                 Intent intent = new Intent(GroupProfile.this, UploadImage.class);
                 intent.putExtras(bundle2);
@@ -228,16 +234,12 @@ public class GroupProfile extends AppCompatActivity {
         });
 
 
-
-
-
-
         Button close = findViewById(R.id.close);
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String the_creator = creator.getText().toString();
-                if(!PostLoginActivity.username.equals(the_creator)) {
+                if (!PostLoginActivity.username.equals(the_creator)) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(GroupProfile.this);
                     builder.setMessage("Only the creator can close this group");
                     builder.show();
@@ -273,30 +275,31 @@ public class GroupProfile extends AppCompatActivity {
                                     startActivity(intent);
                                 }
                             }).setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                }
-                            });
+                        public void onClick(DialogInterface dialog, int id) {
+                        }
+                    });
                     builder.show();
                 }
             }
         });
 
 
-        if(from_closed != null){
+        if (from_closed != null) {
             close.setVisibility(View.GONE);
             upload.setVisibility(View.GONE);
             close.setEnabled(false);
             upload.setEnabled(false);
         }
 
+
     }
 
-
+    @Override
     public void onBackPressed() {
         Intent intent = new Intent(this, PostLoginActivity.class);
         intent.putExtra("original_activity", "this");
         startActivity(intent);
     }
-
-
 }
+
+
