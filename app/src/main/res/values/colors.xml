@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#49BEFF</color>
-    <color name="colorPrimaryDark">#65DCE5</color>
-    <color name="colorAccent">#0D5D98</color>
+    <color name="colorPrimary">#b71c1c</color>
+    <color name="colorPrimaryDark">#7f0000</color>
+    <color name="colorAccent">#f05545</color>
 
     <color name="grey">#E5E5E5</color>
     <color name="white">#FFFFFF</color>
 
-    <color name="school">#2F7092</color>
-    <color name="classes">#0D5D98</color>
-    <color name="headings">#3797CF</color>
+    <color name="school">#8e0000</color>
+    <color name="classes">#9a0007</color>
+    <color name="headings">#e53935</color>
     <color name="circle">#AAFFFFFF</color>
     <color name="circleBorder">#50FFFFFF</color>
-    <color name="gradient">#63C9FF</color>
-    <color name="gradientEnd">#67EFC8</color>
-    <color name="group">#65DCF5</color>
+    <color name="gradient">#b71c1c</color>
+    <color name="gradientEnd">#ef5350</color>
+    <color name="group">#ff867c</color>
 </resources>

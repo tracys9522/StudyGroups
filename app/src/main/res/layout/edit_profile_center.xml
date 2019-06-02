@@ -28,6 +28,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/profilePictureEdit"
                 android:layout_centerHorizontal="true"
+                android:background="#ffebee"
                 android:text="Change Photo"
                 android:textColor="@color/colorPrimary"
                 android:textSize="20dp" />
@@ -127,7 +128,8 @@
                 android:layout_alignBaseline="@+id/classesInput"
                 android:layout_alignLeft="@+id/classesInput"
                 android:layout_marginLeft="-37dp"
-                android:background="@drawable/add_class" />
+                android:background="@drawable/add_class"
+                android:textColor="#FFFFFF" />
 
             <ListView
                 android:id="@+id/classList"

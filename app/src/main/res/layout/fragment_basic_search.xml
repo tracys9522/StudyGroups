@@ -28,10 +28,13 @@
 
     <Button
         android:id="@+id/search"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="116dp"
+        android:layout_height="61dp"
         android:layout_gravity="center"
-        android:text="Search" />
+        android:backgroundTint="@color/gradientEnd"
+        android:text="Search"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp" />
 
 
 </LinearLayout>
