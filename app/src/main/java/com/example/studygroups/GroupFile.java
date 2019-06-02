@@ -1,6 +1,9 @@
 package com.example.studygroups;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Path;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,15 +14,20 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -30,6 +38,7 @@ public class GroupFile extends AppCompatActivity {
     ArrayList<String> currentFiles = new ArrayList<>();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference collection = db.collection("Active Groups");
+    ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +49,7 @@ public class GroupFile extends AppCompatActivity {
         String group = (String) bundle.get("group");
 
         file = findViewById(R.id.file);
+        imageView = findViewById(R.id.file_image);
 
         Query searchGroup = collection.whereEqualTo("name", group);
         searchGroup.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -57,19 +67,37 @@ public class GroupFile extends AppCompatActivity {
             }
         });
 
-        StorageReference filepath = FirebaseStorage.getInstance().getReferenceFromUrl("gs://grouppager.appspot.com/").child("Files");
-        StorageReference imageRef = filepath.child("image");
-
         file.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                /*
-                ImageView imageView = findViewById(R.id.file_image);
-                GlideApp.with(this)
-                        .load(storageReference)
-                        .into(imageView);
-                */
+                final String filename = currentFiles.get(position);
+                StorageReference filepath = FirebaseStorage.getInstance().getReference("Files").child(filename);
+
+                File localFile = null;
+                try {
+                localFile = File.createTempFile("images", ".jpeg");
+                System.out.println("TEMP FILE CREATE" + localFile.getAbsolutePath().toString());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+                filepath.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        // Local temp file has been created
+                        Bitmap myBitmap = BitmapFactory.decodeFile(filepath.toString());
+                        imageView.setImageBitmap(myBitmap);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle any errors
+                    }
+                });
+
+
             }
         });
 

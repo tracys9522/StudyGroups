@@ -45,7 +45,7 @@ dependencies {
 //    implementation 'com.firebaseui:firebase-ui-database:5.0.0'
 //
 //    // FirebaseUI for Cloud Firestore
-//    implementation 'com.firebaseui:firebase-ui-firestore:5.0.0'
+//    implementation 'com.firebaseui:firebase-ui-firestore:4.2.0'
 //
 //    // FirebaseUI for Firebase Auth
     implementation 'com.firebaseui:firebase-ui-auth:4.2.0'

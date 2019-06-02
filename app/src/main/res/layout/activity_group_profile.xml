@@ -206,7 +206,7 @@
             android:textSize="16dp"
             android:textStyle="bold"
             android:layout_alignRight="@+id/upload"
-            android:layout_marginLeft="20dp"/>
+            android:layout_marginLeft="120dp"/>
 
 
     </LinearLayout>

@@ -235,16 +235,20 @@ public class GroupProfile extends AppCompatActivity {
             }
         });
 
+        //TODO
+        //FIX LAYOUT
+
         //if creator or group member set visible
+        boolean visible = false;
         Button upload = findViewById(R.id.upload);
         if (target.creator.equals(PostLoginActivity.username)) {
-            upload.setVisibility(View.GONE);
+            visible = true;
             Button close = (Button) findViewById(R.id.close);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
             );
-            params.setMargins(270, 0, 0, 0);
+            params.setMargins(40, 0, 0, 0);
             close.setLayoutParams(params);
             Button j = (Button) findViewById(R.id.join);
             LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(
@@ -256,17 +260,19 @@ public class GroupProfile extends AppCompatActivity {
         }
         for (int i = 0; i < currentMembers.size(); i++) {
             if (currentMembers.get(i).equals(PostLoginActivity.username)) {
-                upload.setVisibility(View.GONE);
+                visible = true;
                 Button close = (Button) findViewById(R.id.close);
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
                 );
-                params.setMargins(270, 0, 0, 0);
+                params.setMargins(40, 0, 0, 0);
                 close.setLayoutParams(params);
             }
         }
-
+        if(!visible){
+            upload.setVisibility(View.GONE);
+        }
 
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
