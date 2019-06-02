@@ -157,6 +157,16 @@
         android:orientation="vertical"></LinearLayout>
 
     <Button
+        android:id="@+id/close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@color/gradient"
+        android:padding="3dp"
+        android:text="Close Group"
+        android:textColor="#FFFFFF"
+        android:textSize="16dp" />
+    <Button
         android:id="@+id/upload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -164,20 +174,11 @@
         android:background="@color/gradientEnd"
         android:padding="3dp"
         android:text="Upload"
+        android:layout_marginTop="15dp"
         android:visibility="invisible"
         android:textColor="#FFFFFF"
         android:textSize="16sp" />
 
-    <Button
-        android:id="@+id/close"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="15dp"
-        android:background="@color/gradient"
-        android:padding="3dp"
-        android:text="Close Group"
-        android:textColor="#FFFFFF"
-        android:textSize="16dp" />
+
 
 </LinearLayout>
