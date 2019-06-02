@@ -38,6 +38,7 @@ public class GroupFile extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference collection = db.collection("Active Groups");
     ImageView imageView;
+    String path;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,12 +71,13 @@ public class GroupFile extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                final String filename = currentFiles.get(position)+".jpeg";
+                final String filename = currentFiles.get(position);
                 StorageReference filepath = FirebaseStorage.getInstance().getReference("Files").child(filename);
 
                 File localFile = null;
                 try {
                     localFile = File.createTempFile("images", "jpeg");
+                    path = localFile.getPath();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -84,7 +86,7 @@ public class GroupFile extends AppCompatActivity {
                     @Override
                     public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                         // Local temp file has been created
-                        Bitmap myBitmap = BitmapFactory.decodeFile(filename);
+                        Bitmap myBitmap = BitmapFactory.decodeFile(path);
                         imageView.setImageBitmap(myBitmap);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
