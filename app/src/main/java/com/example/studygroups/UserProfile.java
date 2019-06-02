@@ -38,6 +38,7 @@ public class UserProfile implements Serializable {
         }
         groups = new ArrayList<String>();
     }
+
     public UserProfile(String username, String display_name, String major,String profilePicture,ArrayList<String> classes){
         this.username = username;
         this.display_name = display_name;
