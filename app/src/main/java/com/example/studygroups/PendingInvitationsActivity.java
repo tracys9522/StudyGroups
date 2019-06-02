@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class PendingInvitationsActivity extends AppCompatActivity {
     private ListView listview;
@@ -42,6 +43,10 @@ public class PendingInvitationsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        if(g.pending_invitations.size() == 0){
+            TextView message = (TextView) findViewById(R.id.noPendingMessage);
+            message.setCursorVisible(true);
+        }
 
     }
 

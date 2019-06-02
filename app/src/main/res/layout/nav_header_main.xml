@@ -14,7 +14,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Study Groups"
+            android:text="SCU Study Groups"
             android:gravity="center_horizontal"
             android:layout_marginTop="5dp"
             android:fontFamily="sans-serif-light"

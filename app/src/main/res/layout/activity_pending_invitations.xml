@@ -6,6 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".PendingInvitationsActivity">
 
+
+    <TextView
+        android:id="@+id/noPendingMessage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="No Pending Invitations"
+        android:textAlignment="center"
+        android:textColor="#130E0E"
+        android:textSize="32dp"
+        android:textStyle="bold"
+        android:visibility="invisible" />
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -15,5 +26,7 @@
         android:layout_height="match_parent"
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="8dp" />
+
+
     </ScrollView>
 </android.support.constraint.ConstraintLayout>
