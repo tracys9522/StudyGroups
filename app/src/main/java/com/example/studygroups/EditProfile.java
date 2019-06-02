@@ -184,9 +184,8 @@ public class EditProfile extends AppCompatActivity {
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         // Get a URL to the uploaded content
                         //Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                        System.out.println("Image uploaded!");
-
-
+                        System.out.println("Image uploaded! ");
+                        System.out.println(taskSnapshot.getStorage().getName()+" TESTING");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
