@@ -139,6 +139,23 @@ public class Profile extends AppCompatActivity
                         }
                     }
                 });
+                Query query2 = collection.whereEqualTo("username", email);
+                query2.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                UserProfile user = document.toObject(UserProfile.class);
+                                user.addGroup(group);
+                                Map<String, Object> answers = new HashMap<>();
+                                answers.put("groups", user.groups);
+                                collection.document(document.getReference().getId()).update(answers);
+                                break;
+                            }
+                        }
+                    }
+                });
+
             }
         });
 

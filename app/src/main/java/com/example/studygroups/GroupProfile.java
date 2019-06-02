@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.firebase.ui.auth.data.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -139,7 +141,7 @@ public class GroupProfile extends AppCompatActivity {
                                     for(String s: g.pending_invitations){
                                         if(s.equals(PostLoginActivity.username)){
                                             AlertDialog.Builder builder = new AlertDialog.Builder(GroupProfile.this);
-                                            builder.setMessage("You have already joined this group!");
+                                            builder.setMessage("You have already sent an invitation to this group!");
                                             builder.show();
                                             return;
                                         }
@@ -168,6 +170,7 @@ public class GroupProfile extends AppCompatActivity {
                 upload.setVisibility(View.VISIBLE);
             }
         }
+
 
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -199,15 +202,33 @@ public class GroupProfile extends AppCompatActivity {
                     AlertDialog.Builder builder = new AlertDialog.Builder(GroupProfile.this);
                     builder.setMessage("Are you sure you want to close the group?")
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
                                 public void onClick(DialogInterface dialog, int id) {
+                                    for (String member : target.group_member) {
+                                        Query searchGroup = collectionProfile.whereEqualTo("name", member);
+                                        searchGroup.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                                        UserProfile user = document.toObject(UserProfile.class);
+                                                        user.groups.remove(target.getName());
+                                                        collectionProfile.document(document.getId()).update("groups", user.groups);
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    }
                                     DocumentReference addedDocRef = close_collection.document();
                                     String key = addedDocRef.getId();
+                                    target.group_member.clear();
                                     target.setKey(key);
                                     addedDocRef.set(target);
                                     collection.document(groupDocument.getId()).delete();
                                     Intent intent = new Intent(GroupProfile.this, PostLoginActivity.class);
                                     intent.putExtra("original_activity", "not main");
-                                    startActivity(intent);                                }
+                                    startActivity(intent);
+                                }
                             }).setNegativeButton("No", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                 }
