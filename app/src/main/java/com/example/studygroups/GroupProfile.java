@@ -248,7 +248,7 @@ public class GroupProfile extends AppCompatActivity {
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
             );
-            params.setMargins(270, 0, 0, 0);
+            params.setMargins(40, 0, 0, 0);
             close.setLayoutParams(params);
             Button j = (Button) findViewById(R.id.join);
             LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(
@@ -266,7 +266,7 @@ public class GroupProfile extends AppCompatActivity {
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
                 );
-                params.setMargins(270, 0, 0, 0);
+                params.setMargins(40, 0, 0, 0);
                 close.setLayoutParams(params);
             }
         }
