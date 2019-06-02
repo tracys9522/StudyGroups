@@ -79,11 +79,10 @@ public class Profile extends AppCompatActivity
         setSupportActionBar(toolbar);
 
 
-
         imguri = null;
         userName = (TextView) findViewById(R.id.userName);
         majorText = (TextView) findViewById(R.id.majorText);
-        classesList= (ListView) findViewById(R.id.classes);
+        classesList = (ListView) findViewById(R.id.classes);
         groupsList = (ListView) findViewById(R.id.groups);
         profilePicture = (ImageView) findViewById(R.id.profilePicture);
         acceptButton = (Button) findViewById(R.id.accept_button);
@@ -92,14 +91,14 @@ public class Profile extends AppCompatActivity
         classesAdapter = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_list_item_1,
-                classes );
+                classes);
 
         classesList.setAdapter(classesAdapter);
 
         groupsAdapter = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_list_item_1,
-                PostLoginActivity.current_user.groups );
+                PostLoginActivity.current_user.groups);
 
         groupsList.setAdapter(groupsAdapter);
 
@@ -108,11 +107,11 @@ public class Profile extends AppCompatActivity
         Bundle bundle = getIntent().getExtras();
         try {
             group = (Group) bundle.getSerializable("group");
-        }catch (java.lang.NullPointerException exception) {
+        } catch (java.lang.NullPointerException exception) {
             group = null;
         }
 
-        if(showButtons == null){
+        if (showButtons == null) {
             acceptButton.setVisibility(View.GONE);
             acceptButton.setClickable(false);
 
@@ -124,7 +123,7 @@ public class Profile extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 group.addGroupMember(email);
-                Query query = active.whereEqualTo("name",group.name);
+                Query query = active.whereEqualTo("name", group.name);
                 query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -168,7 +167,7 @@ public class Profile extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 group.removePendingInvitation(email);
-                Query query = active.whereEqualTo("name",group.name);
+                Query query = active.whereEqualTo("name", group.name);
                 query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -189,41 +188,40 @@ public class Profile extends AppCompatActivity
             }
         });
 
-        Query query = collection.whereEqualTo("username",email);
+        Query query = collection.whereEqualTo("username", email);
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    for(QueryDocumentSnapshot document: task.getResult()){
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
                         userDoc = document.getReference();
                         UserProfile user = document.toObject(UserProfile.class);
 
-                        if(user.display_name != null){
+                        if (user.display_name != null) {
                             userName.setText(user.display_name);
                         }
-                        if(user.major != null){
+                        if (user.major != null) {
                             majorText.setText(user.major);
                         }
-                        if(user.profilePicture != null){
+                        if (user.profilePicture != null) {
                             imguri = Uri.parse(user.profilePicture);
                             profilePicture.setImageURI(imguri);
-                        }else {
+                        } else {
                             imguri = null;
                         }
-                        if(user.classes.size() > 0){
-                            for(int i = 0; i < user.classes.size(); i++) {
+                        if (user.classes.size() > 0) {
+                            for (int i = 0; i < user.classes.size(); i++) {
                                 classes.add(i, user.classes.get(i));
                             }
                             classesAdapter.notifyDataSetChanged();
                         }
                         ArrayList<String> tempGroups = user.groups;
-                        if(tempGroups != null){
-                            for(int i = 0; i < user.groups.size(); i++) {
-                                groups.add(i,user.groups.get(i));
+                        if (tempGroups != null) {
+                            for (int i = 0; i < user.groups.size(); i++) {
+                                groups.add(i, user.groups.get(i));
                             }
                             groupsAdapter.notifyDataSetChanged();
                         }
-
 
 
                     }
@@ -253,7 +251,7 @@ public class Profile extends AppCompatActivity
 
             }
         });
-        if(classes.size() == 0){
+        if (classes.size() == 0) {
             LinearLayout classView = (LinearLayout) findViewById(R.id.classesView);
             classView.setVisibility(View.GONE);
         }
@@ -262,7 +260,7 @@ public class Profile extends AppCompatActivity
 
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String lookup = groups.get(position);
-                Query query = active.whereEqualTo("name",lookup);
+                Query query = active.whereEqualTo("name", lookup);
                 query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -271,7 +269,7 @@ public class Profile extends AppCompatActivity
                                 DocumentReference groupDoc = document.getReference();
                                 target = document.toObject(Group.class);
                                 Bundle bundle = new Bundle();
-                                bundle.putSerializable("group",target);
+                                bundle.putSerializable("group", target);
 
                                 Intent intent = new Intent(Profile.this, GroupProfile.class);
                                 intent.putExtras(bundle);
@@ -283,7 +281,18 @@ public class Profile extends AppCompatActivity
             }
         });
 
+        userName.setOnClickListener(new View.OnClickListener() {
 
+            @Override
+            public void onClick(View v) {
+                Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+                emailIntent.putExtra(Intent.EXTRA_EMAIL  , email);
+//                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "subject of email");
+//                emailIntent.putExtra(Intent.EXTRA_TEXT   , message);
+                emailIntent.setType("text/plain"); // <-- HERE
+                startActivity(emailIntent); // <-- AND HERE
+            }
+        });
     }
 
     @Override
