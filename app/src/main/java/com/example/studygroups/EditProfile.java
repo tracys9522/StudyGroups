@@ -3,6 +3,8 @@ package com.example.studygroups;
 import android.app.AppComponentFactory;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -27,12 +29,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
-import com.google.firebase.storage.UploadTask;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -42,7 +46,7 @@ public class EditProfile extends AppCompatActivity {
 
     public static final String TAG = "Edit Profile";
 
-    public static final int PICK_IMAGE_REQUEST = 1;
+//    public static final int PICK_IMAGE_REQUEST = 1;
 
     private ListView listview;
     private ArrayList<String> addedClasses;
@@ -59,7 +63,9 @@ public class EditProfile extends AppCompatActivity {
 
     private StorageTask uploadTask;
 
-    private Uri imguri;
+    private String imguri;
+    String path;
+    String username;
 
 
     private ImageView profilePicture;
@@ -76,6 +82,7 @@ public class EditProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
+        username = getIntent().getStringExtra("username");
         classInput = (EditText) findViewById(R.id.classesInput);
         addClassButton = (Button) findViewById(R.id.addClassButton);
         backButton = (Button) findViewById(R.id.backButton);
@@ -86,7 +93,7 @@ public class EditProfile extends AppCompatActivity {
         display_name = (EditText) findViewById(R.id.display_name);
         major = (EditText) findViewById(R.id.major);
         listview = (ListView) findViewById(R.id.classList);
-        adapter = new ArrayAdapter<String>(EditProfile.this, android.R.layout.simple_list_item_1, addedClasses );
+        adapter = new ArrayAdapter<String>(EditProfile.this, android.R.layout.simple_list_item_1, addedClasses);
         listview.setAdapter(adapter);
 
         changeProfilePictureButton = (Button) findViewById(R.id.changePropilePic);
@@ -96,31 +103,53 @@ public class EditProfile extends AppCompatActivity {
 
         mStorageRef = FirebaseStorage.getInstance().getReference("Images");
 
-        Query query = collection.whereEqualTo("username","thackson@scu.edu");
+        Query query = collection.whereEqualTo("username", username);
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    for(QueryDocumentSnapshot document: task.getResult()){
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
                         userDoc = document.getReference();
                         user = document.toObject(UserProfile.class);
-                        if(user.username != null){
+                        if (user.username != null) {
                             changeUsername.setText(user.username);
                         }
-                        if(user.display_name != null){
+                        if (user.display_name != null) {
                             display_name.setText(user.display_name);
                         }
-                        if(user.major != null){
+                        if (user.major != null) {
                             major.setText(user.major);
                         }
-                        if(user.profilePicture != null){
-                            imguri = Uri.parse(user.profilePicture);
-                            profilePicture.setImageURI(imguri);
+                        if (user.profilePicture != null) {
+                            imguri = user.profilePicture;
+                            String filename = user.profilePicture;
+                            StorageReference filepath = FirebaseStorage.getInstance().getReference("Images").child(filename);
+                            File localFile = null;
+                            try {
+                                localFile = File.createTempFile("images", "jpeg");
+                                path = localFile.getPath();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            filepath.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                    // Local temp file has been created
+                                    Bitmap myBitmap = BitmapFactory.decodeFile(path);
+                                    profilePicture.setImageBitmap(myBitmap);
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    // Handle any errors
+                                }
+                            });
                         } else {
                             imguri = null;
                         }
-                        if(user.classes.size() > 0){
-                            for(int i = 0; i < user.classes.size(); i++){
+                        if (user.classes.size() > 0) {
+                            for (int i = 0; i < user.classes.size(); i++) {
                                 addedClasses.add(i, user.classes.get(i));
                             }
                             adapter.notifyDataSetChanged();
@@ -151,13 +180,7 @@ public class EditProfile extends AppCompatActivity {
         saveChangesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(imguri != null){
-                    if(uploadTask != null && uploadTask.isInProgress()){
-                    } else{
-                        FileUploader();
-                    }
-                    saveChanges();
-                }
+                saveChanges();
                 Intent p = new Intent(EditProfile.this, Profile.class);
                 startActivity(p);
             }
@@ -165,75 +188,13 @@ public class EditProfile extends AppCompatActivity {
         changeProfilePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FileChooser();
+
+                Intent intent = new Intent(EditProfile.this, UploadImage.class);
+                intent.putExtra("profileAction", "true");
+                intent.putExtra("username",username );
+                startActivity(intent);
             }
         });
-
-        initImageLoader();
-        setProfileImage();
-
-
-    }
-
-    private void FileUploader(){
-
-        final StorageReference ref = mStorageRef.child(System.currentTimeMillis()+"");
-        uploadTask= ref.putFile(imguri)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        // Get a URL to the uploaded content
-                        //Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                        System.out.println("Image uploaded! ");
-                        System.out.println(taskSnapshot.getStorage().getName()+" TESTING");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        // Handle unsuccessful uploads
-                        // ...
-                        System.out.println("Error in uploading image.");
-                    }
-                });
-    }
-    private String getExtension(Uri uri){
-        ContentResolver cr = getContentResolver();
-        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-        return mimeTypeMap.getExtensionFromMimeType(cr.getType(uri));
-    }
-    private void FileChooser(){
-
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, PICK_IMAGE_REQUEST);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
-                && data != null && data.getData() != null){
-            imguri = data.getData();
-
-//                Picasso.with(this).load(imguri).into(profilePicture);
-            profilePicture.setImageURI(imguri);
-        }
-    }
-
-    private void initImageLoader(){
-        UniversalImageLoader universalImageLoader = new UniversalImageLoader(this);
-        ImageLoader imageLoader = ImageLoader.getInstance();
-        imageLoader.init(universalImageLoader.getConfig());
-    }
-
-    private void setProfileImage(){
-        if(imguri == null){
-            String imgURL = "https://wallpaperstream.com/wallpapers/full/tulips/Tulips-Flowers-Bouquet-HD-Wallpaper.jpg";
-            UniversalImageLoader.setImage(imgURL, profilePicture, null, "");
-        }
 
     }
 
@@ -256,7 +217,7 @@ public class EditProfile extends AppCompatActivity {
             user.display_name = nameString;
             user.major = majorString;
             user.classes = addedClasses;
-            user.profilePicture = imguri.toString();
+            user.profilePicture = imguri;
 
             collection.document(userDoc.getId()).update(
                     "username", user.username,
@@ -267,7 +228,7 @@ public class EditProfile extends AppCompatActivity {
             );
 
         } else {
-            user = new UserProfile(usernameString, nameString, majorString, imguri.toString(),addedClasses);
+            user = new UserProfile(usernameString, nameString, majorString, imguri,addedClasses);
             collection
                     .add(user)
                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {

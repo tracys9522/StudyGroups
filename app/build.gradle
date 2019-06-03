@@ -54,5 +54,5 @@ dependencies {
 //    implementation 'com.firebaseui:firebase-ui-auth-github:5.0.0'
 //
 //    // FirebaseUI for Cloud Storage
-    implementation 'com.firebaseui:firebase-ui-storage:4.2.0'
+//    implementation 'com.firebaseui:firebase-ui-storage:4.2.0'
 }

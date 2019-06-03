@@ -1,6 +1,8 @@
 package com.example.studygroups;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -29,6 +31,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -37,7 +41,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -68,7 +77,8 @@ public class Profile extends AppCompatActivity
     String email;
     Group group;
     Group target;
-    private Uri imguri;
+    private String imguri;
+    String path;
 
     Button editProfile;
     @Override
@@ -204,8 +214,31 @@ public class Profile extends AppCompatActivity
                             majorText.setText(user.major);
                         }
                         if (user.profilePicture != null) {
-                            imguri = Uri.parse(user.profilePicture);
-                            profilePicture.setImageURI(imguri);
+                            imguri = user.profilePicture;
+                            String filename = user.profilePicture;
+                            StorageReference filepath = FirebaseStorage.getInstance().getReference("Images").child(filename);
+                            File localFile = null;
+                            try {
+                                localFile = File.createTempFile("images", "jpeg");
+                                path = localFile.getPath();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            filepath.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                    // Local temp file has been created
+                                    Bitmap myBitmap = BitmapFactory.decodeFile(path);
+                                    profilePicture.setImageBitmap(myBitmap);
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    // Handle any errors
+                                }
+                            });
+
                         } else {
                             imguri = null;
                         }
@@ -244,10 +277,9 @@ public class Profile extends AppCompatActivity
         editProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent intent = new Intent(Profile.this, EditProfile.class);
+                intent.putExtra("username", FirebaseAuth.getInstance().getCurrentUser().getEmail());
                 startActivity(intent);
-
 
             }
         });

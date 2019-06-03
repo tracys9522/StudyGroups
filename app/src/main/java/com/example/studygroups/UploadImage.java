@@ -42,12 +42,16 @@ public class UploadImage extends AppCompatActivity {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference collection = db.collection("Active Groups");
+    CollectionReference profileCollection = db.collection("User Profile");
     DocumentReference groupDocument;
+    DocumentReference profileDocument;
 
     ArrayList<String> image;
     byte [] datafile;
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
+    boolean status;
+    String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,24 +59,49 @@ public class UploadImage extends AppCompatActivity {
         setContentView(R.layout.activity_upload_image);
 
         Bundle bundle = getIntent().getExtras();
-        Group target = (Group)bundle.getSerializable("group");
-        image = target.images;
+        Group target = null;
+        if(bundle.getSerializable("group") != null){
+            target = (Group)bundle.getSerializable("group");
+            image = target.images;
+            status = true;
+        }
+        if(getIntent().getStringExtra("profileAction").contentEquals("true")){
+            status = false;
+            username = getIntent().getStringExtra("username");
+        }
 
         take = findViewById(R.id.take_picture);
         save = findViewById(R.id.save);
         capture = findViewById(R.id.image);
 
-        Query search = collection.whereEqualTo("key",target.key);
-        search.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        groupDocument = document.getReference();
+        if(status){
+            Query search = collection.whereEqualTo("key",target.key);
+            search.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            groupDocument = document.getReference();
+                        }
                     }
                 }
-            }
-        });
+            });
+
+        } else {
+            Query search = profileCollection.whereEqualTo("username",username);
+            search.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            profileDocument = document.getReference();
+                        }
+                    }
+                }
+            });
+
+        }
+
 
         take.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,6 +117,8 @@ public class UploadImage extends AppCompatActivity {
             public void onClick(View v) {
                     FileUploader();
                     //collection.document(groupDocument.getId()).update("images", image);
+
+
             }
         });
 
@@ -114,8 +145,18 @@ public class UploadImage extends AppCompatActivity {
     }
 
     private void FileUploader(){
-        StorageReference filepath = FirebaseStorage.getInstance().getReference("Files");
-        StorageReference imageRef = filepath.child("image"+new Date().getTime());
+        StorageReference filepath;
+        StorageReference imageRef;
+        if(status){
+            filepath = FirebaseStorage.getInstance().getReference("Files");
+            imageRef = filepath.child("image"+new Date().getTime());
+
+        }else {
+            filepath = FirebaseStorage.getInstance().getReference("Images");
+            imageRef = filepath.child("image"+new Date().getTime());
+
+        }
+
 
         UploadTask uploadTask = imageRef.putBytes(datafile);
         uploadTask
@@ -127,6 +168,11 @@ public class UploadImage extends AppCompatActivity {
                         String name = taskSnapshot.getStorage().getName();
                         System.out.println("FILEPATH: "+name);
                         save_info(name);
+                        if(!status){
+                            Intent intent = new Intent(UploadImage.this, Profile.class);
+                            startActivity(intent);
+
+                        }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -140,7 +186,14 @@ public class UploadImage extends AppCompatActivity {
                 });
     }
     private void save_info(String filename){
-        image.add(filename);
-        collection.document(groupDocument.getId()).update("images", image);
+        if(status){
+            image.add(filename);
+            collection.document(groupDocument.getId()).update("images", image);
+
+        } else {
+
+            profileCollection.document(profileDocument.getId()).update("profilePicture", filename);
+        }
+
     }
 }
