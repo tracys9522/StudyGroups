@@ -102,9 +102,9 @@ public class MainActivity extends AppCompatActivity {
 
                             if(!found) {
                                 current_user = new UserProfile(username, display_name);
-//                                PostLoginActivity.current_user = current_user;
-////                                collection.add(current_user);
                                 Intent intent = new Intent(MainActivity.this, EditProfile.class);
+                                intent.putExtra("original_activity", "main");
+                                intent.putExtra("current_user", current_user);
                                 startActivity(intent);
                             }
 
