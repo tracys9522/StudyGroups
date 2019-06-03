@@ -3,7 +3,6 @@ package com.example.studygroups;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Path;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -39,6 +38,7 @@ public class GroupFile extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference collection = db.collection("Active Groups");
     ImageView imageView;
+    String path;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,18 +76,17 @@ public class GroupFile extends AppCompatActivity {
 
                 File localFile = null;
                 try {
-                localFile = File.createTempFile("images", ".jpeg");
-                System.out.println("TEMP FILE CREATE" + localFile.getAbsolutePath().toString());
+                    localFile = File.createTempFile("images", "jpeg");
+                    path = localFile.getPath();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
 
                 filepath.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                         // Local temp file has been created
-                        Bitmap myBitmap = BitmapFactory.decodeFile(filepath.toString());
+                        Bitmap myBitmap = BitmapFactory.decodeFile(path);
                         imageView.setImageBitmap(myBitmap);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
