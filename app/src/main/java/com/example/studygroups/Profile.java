@@ -400,8 +400,7 @@ public class Profile extends AppCompatActivity
                 startActivity(cg);
                 break;
             case R.id.nav_groups:
-                Intent g = new Intent(Profile.this, PostLoginActivity.class);
-                g.putExtra("original_activity", "not main");
+                Intent g = new Intent(this, MyGroupsActivity.class);
                 startActivity(g);
                 break;
             case R.id.nav_logout:

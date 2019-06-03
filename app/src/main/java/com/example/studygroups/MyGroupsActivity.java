@@ -3,6 +3,8 @@ package com.example.studygroups;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -60,6 +62,7 @@ public class MyGroupsActivity extends AppCompatActivity {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("group", name2group.get(listItem));
                 intent.putExtras(bundle);
+                intent.putExtra("from_group_activity", "hi");
                 startActivity(intent);
             }
         });
@@ -72,5 +75,13 @@ public class MyGroupsActivity extends AppCompatActivity {
         }
 
     }
+
+    public void onBackPressed() {
+            Intent intent = new Intent(MyGroupsActivity.this, PostLoginActivity.class);
+            intent.putExtra("original_activity", "not_main");
+            startActivity(intent);
+    }
+
+
 
 }

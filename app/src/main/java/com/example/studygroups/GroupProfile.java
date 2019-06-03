@@ -355,9 +355,15 @@ public class GroupProfile extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(this, PostLoginActivity.class);
-        intent.putExtra("original_activity", "this");
-        startActivity(intent);
+        String from_my_groups = (String) getIntent().getExtras().get("from_group_activity");
+        if (from_my_groups  != null) {
+            Intent intent = new Intent(this, MyGroupsActivity.class);
+            startActivity(intent);
+        } else {
+            Intent intent = new Intent(this, PostLoginActivity.class);
+            intent.putExtra("original_activity", "this");
+            startActivity(intent);
+        }
     }
 }
 
