@@ -49,7 +49,7 @@ public class search_result extends AppCompatActivity {
         listView.setAdapter(adapter);
 
         Query query1 = collection.whereEqualTo("name", value);
-        Query query = collection.whereEqualTo("department",value.toUpperCase());
+        Query query = collection.whereEqualTo("department",value);
         Query query2 = collection.whereEqualTo("course_no",value);
         Query query3 = collection.whereEqualTo("prof",value);
 
