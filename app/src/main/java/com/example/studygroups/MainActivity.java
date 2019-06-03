@@ -93,23 +93,18 @@ public class MainActivity extends AppCompatActivity {
                             UserProfile current_user = null;
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 current_user = document.toObject(UserProfile.class);
-                                Intent intent = new Intent(MainActivity.this, PostLoginActivity.class);
-                                intent.putExtra("original_activity", "main");
-                                intent.putExtra("current_user", current_user);
-                                startActivity(intent);
                                 found = true;
                             }
 
                             if(!found) {
                                 current_user = new UserProfile(username, display_name);
-                                Intent intent = new Intent(MainActivity.this, PostLoginActivity.class);
-                                intent.putExtra("original_activity", "main");
-                                intent.putExtra("current_user", current_user);
-                                startActivity(intent);
+                                collection.add(current_user);
                             }
 
-
-
+                            Intent intent = new Intent(MainActivity.this, PostLoginActivity.class);
+                            intent.putExtra("original_activity", "main");
+                            intent.putExtra("current_user", current_user);
+                            startActivity(intent);
                         }
 
                     }
