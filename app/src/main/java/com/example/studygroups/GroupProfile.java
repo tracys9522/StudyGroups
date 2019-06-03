@@ -188,9 +188,7 @@ public class GroupProfile extends AppCompatActivity {
                                                         UserProfile user = document.toObject(UserProfile.class);
                                                         user.groups.add(target.getName());
                                                         collectionProfile.document(document.getId()).update("groups", user.groups);
-                                                        System.out.println("DO YOU SEE ME?");
                                                         if(user.getUsername().equals(PostLoginActivity.username)){
-                                                            System.out.println("DO YOU SEE ME?");
                                                             PostLoginActivity.current_user.groups = user.groups;
                                                         }
                                                     }
