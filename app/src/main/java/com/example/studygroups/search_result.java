@@ -38,8 +38,7 @@ public class search_result extends AppCompatActivity {
 
         Intent intent = getIntent();
         String value = intent.getStringExtra("search");
-        System.out.println(value);
-
+        System.out.println("SEARCH CRITERIA: "+value);
         setContentView(R.layout.activity_search_result);
 
         arrayList.clear();
@@ -48,74 +47,96 @@ public class search_result extends AppCompatActivity {
         adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, arrayList);
         listView.setAdapter(adapter);
 
-        Query query1 = collection.whereEqualTo("name", value);
-        Query query = collection.whereEqualTo("department",value);
-        Query query2 = collection.whereEqualTo("course_no",value);
-        Query query3 = collection.whereEqualTo("prof",value);
-
-        query1.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    for(QueryDocumentSnapshot document: task.getResult()){
-                        Group group = document.toObject(Group.class);
-                        String value = group.toString();
-                        System.out.println(value);
-                        arrayList.add(value);
-                        result_group.add(group);
+        if(value.equals("") || value == null){
+            collection.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if(task.isSuccessful()){
+                        for(QueryDocumentSnapshot document: task.getResult()){
+                            Group group = document.toObject(Group.class);
+                            String value = group.toString();
+                            System.out.println(value);
+                            arrayList.add(value);
+                            result_group.add(group);
+                        }
+                        adapter.notifyDataSetChanged();
                     }
-                    adapter.notifyDataSetChanged();
                 }
-            }
-        });
+            });
 
-        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    for(QueryDocumentSnapshot document: task.getResult()){
-                        Group group = document.toObject(Group.class);
-                        String value = group.toString();
-                        System.out.println(value);
-                        arrayList.add(value);
-                        result_group.add(group);
-                    }
-                    adapter.notifyDataSetChanged();
-                }
-            }
-        });
+        }
 
-        query2.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    for(QueryDocumentSnapshot document: task.getResult()){
-                        Group group = document.toObject(Group.class);
-                        String value = group.toString();
-                        System.out.println(value);
-                        arrayList.add(value);
-                        result_group.add(group);
-                    }
-                    adapter.notifyDataSetChanged();
-                }
-            }
-        });
+        else {
+            Query query1 = collection.whereEqualTo("name", value);
+            Query query = collection.whereEqualTo("department", value);
+            Query query2 = collection.whereEqualTo("course_no", value);
+            Query query3 = collection.whereEqualTo("prof", value);
 
-        query3.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    for(QueryDocumentSnapshot document: task.getResult()){
-                        Group group = document.toObject(Group.class);
-                        String value = group.toString();
-                        System.out.println(value);
-                        arrayList.add(value);
-                        result_group.add(group);
+            query1.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Group group = document.toObject(Group.class);
+                            String value = group.toString();
+                            System.out.println(value);
+                            arrayList.add(value);
+                            result_group.add(group);
+                        }
+                        adapter.notifyDataSetChanged();
                     }
-                    adapter.notifyDataSetChanged();
                 }
-            }
-        });
+            });
+
+            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Group group = document.toObject(Group.class);
+                            String value = group.toString();
+                            System.out.println(value);
+                            arrayList.add(value);
+                            result_group.add(group);
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+            });
+
+            query2.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Group group = document.toObject(Group.class);
+                            String value = group.toString();
+                            System.out.println(value);
+                            arrayList.add(value);
+                            result_group.add(group);
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+            });
+
+            query3.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Group group = document.toObject(Group.class);
+                            String value = group.toString();
+                            System.out.println(value);
+                            arrayList.add(value);
+                            result_group.add(group);
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+            });
+
+        }
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
