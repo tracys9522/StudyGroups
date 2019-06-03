@@ -110,8 +110,6 @@ public class Profile extends AppCompatActivity
             group = null;
         }
         if(email != null && !email.equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
-            System.out.println("TESTING CURRENT USER"+ email);
-            System.out.println("TESTING CURRENT USER"+ FirebaseAuth.getInstance().getCurrentUser().getEmail());
             editProfile.setVisibility(View.INVISIBLE);
         } else {
             editProfile.setVisibility(View.VISIBLE);
