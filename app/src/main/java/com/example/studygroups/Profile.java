@@ -98,6 +98,7 @@ public class Profile extends AppCompatActivity
         acceptButton = (Button) findViewById(R.id.accept_button);
         rejectButton = (Button) findViewById(R.id.reject_button);
 
+        editProfile = (Button) findViewById(R.id.editProfileButton);
 
 
         email = getIntent().getStringExtra("username");
@@ -107,6 +108,11 @@ public class Profile extends AppCompatActivity
             group = (Group) bundle.getSerializable("group");
         } catch (java.lang.NullPointerException exception) {
             group = null;
+        }
+        if(email != null && !email.equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+            editProfile.setVisibility(View.INVISIBLE);
+        } else {
+            editProfile.setVisibility(View.VISIBLE);
         }
 
         Query query = collection.whereEqualTo("username", email);
@@ -277,7 +283,7 @@ public class Profile extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        editProfile = (Button) findViewById(R.id.editProfileButton);
+
 
         editProfile.setOnClickListener(new View.OnClickListener() {
             @Override
