@@ -28,7 +28,7 @@ import java.util.ArrayList;
 
 public class GroupProfile extends AppCompatActivity {
 
-    TextView name, type, department, course_no, professor, creator;
+    TextView name, type, department, course_no, professor, creator, description;
     String key;
     String newGroup;
 
@@ -59,6 +59,7 @@ public class GroupProfile extends AppCompatActivity {
         course_no = findViewById(R.id.set_course);
         professor = findViewById(R.id.set_professor);
         creator = findViewById(R.id.creator);
+        description = findViewById(R.id.description);
 
         groupMembers = (Button) findViewById(R.id.groupMembers);
 
@@ -75,6 +76,7 @@ public class GroupProfile extends AppCompatActivity {
         course_no.setText(target.getCourse_no());
         professor.setText(target.getProf());
         creator.setText(target.getCreator());
+        description.setText(target.description == null ? "" : target.description);
 
         currentMembers = target.group_member;
         key = target.getKey();

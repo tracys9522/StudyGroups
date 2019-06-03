@@ -13,6 +13,7 @@ public class Group implements Serializable {
     String prof;
     String key;
     String creator;
+    String description;
     ArrayList<String> group_member = new ArrayList<>();
     ArrayList<String> pending_invitations = new ArrayList<>();
     ArrayList<String> images = new ArrayList<>();
@@ -25,9 +26,10 @@ public class Group implements Serializable {
         this.prof = "";
         this.key = "";
         this.creator = "";
+        this.description = "";
     }
 
-    public Group(String name, String type, String department, String course_no, String prof, String creator){
+    public Group(String name, String type, String department, String course_no, String prof, String creator, String description){
         this.name = name;
         this.type = type;
         this.department = department;
@@ -36,6 +38,7 @@ public class Group implements Serializable {
         this.key = "";
         this.creator = creator;
         group_member.add(creator);
+        this.description = description;
     }
 
     public String getType() {

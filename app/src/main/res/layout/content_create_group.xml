@@ -154,6 +154,7 @@
             android:textSize="22sp" />
 
         <EditText
+            android:id="@+id/groupDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"

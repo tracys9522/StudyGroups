@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.text.Editable;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -68,6 +69,10 @@ public class CreateGroup extends AppCompatActivity
         String professor = ((EditText) findViewById(R.id.professor_input)).getText().toString();
         String course_no = ((EditText) findViewById(R.id.course_number_input)).getText().toString();
         String department = ((EditText) findViewById(R.id.department_input)).getText().toString();
+        String description = ((EditText) findViewById(R.id.groupDescription)).getText().toString();
+        if(description == null){
+            description = "";
+        }
 
         if(group_name_map.get(group_name) == null){
             group_name_map.put(group_name, 1);
@@ -83,7 +88,7 @@ public class CreateGroup extends AppCompatActivity
         //get creator
         String creator = PostLoginActivity.username;
 
-        g = new Group(group_name, type, department, course_no, professor, creator);
+        g = new Group(group_name, type, department, course_no, professor, creator,description);
         DocumentReference addedDocRef = reff.collection("Active Groups").document();
         String key = addedDocRef.getId();
         g.setKey(key);
