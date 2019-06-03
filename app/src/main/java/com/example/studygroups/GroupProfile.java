@@ -124,31 +124,31 @@ public class GroupProfile extends AppCompatActivity {
         groupMembers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    if(currentMembers.size() >0){
-                        String[] members =  currentMembers.toArray(new String[0]);
-                        new AlertDialog.Builder(GroupProfile.this)
-                                .setTitle(newGroup + " Members")
-                                .setItems(members, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        Intent intent = new Intent(GroupProfile.this, Profile.class);
-                                        intent.putExtra("username", currentMembers.get(which));
-                                        Bundle bundle = new Bundle();
-                                        intent.putExtras(bundle);
-                                        startActivity(intent);
+                if(currentMembers.size() >0){
+                    String[] members =  currentMembers.toArray(new String[0]);
+                    new AlertDialog.Builder(GroupProfile.this)
+                            .setTitle(newGroup + " Members")
+                            .setItems(members, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent intent = new Intent(GroupProfile.this, Profile.class);
+                                    intent.putExtra("username", currentMembers.get(which));
+                                    Bundle bundle = new Bundle();
+                                    intent.putExtras(bundle);
+                                    startActivity(intent);
 
-                                    }
-                                })
-                                .setNegativeButton("close", null)
-                                .setIcon(R.drawable.logo)
-                                .show();
-                    } else{
-                        new AlertDialog.Builder(GroupProfile.this)
-                                .setTitle(name + "Members")
-                                .setMessage("There are no current members")
-                                .setNegativeButton("close", null)
-                                .setIcon(android.R.drawable.ic_dialog_info)
-                                .show();
-                    }
+                                }
+                            })
+                            .setNegativeButton("close", null)
+                            .setIcon(R.drawable.logo)
+                            .show();
+                } else{
+                    new AlertDialog.Builder(GroupProfile.this)
+                            .setTitle(name + "Members")
+                            .setMessage("There are no current members")
+                            .setNegativeButton("close", null)
+                            .setIcon(android.R.drawable.ic_dialog_info)
+                            .show();
+                }
             }
         });
 
@@ -179,7 +179,7 @@ public class GroupProfile extends AppCompatActivity {
 
                                 public void onClick(DialogInterface dialog, int id) {
                                     for (String member : target.group_member) {
-                                        Query searchGroup = collectionProfile.whereEqualTo("name", member);
+                                        Query searchGroup = collectionProfile.whereEqualTo("username", member);
                                         searchGroup.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                             @Override
                                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -188,6 +188,9 @@ public class GroupProfile extends AppCompatActivity {
                                                         UserProfile user = document.toObject(UserProfile.class);
                                                         user.groups.add(target.getName());
                                                         collectionProfile.document(document.getId()).update("groups", user.groups);
+                                                        if(user.getUsername().equals(PostLoginActivity.username)){
+                                                            PostLoginActivity.current_user.groups = user.groups;
+                                                        }
                                                     }
                                                 }
                                             }
@@ -196,7 +199,6 @@ public class GroupProfile extends AppCompatActivity {
                                     close_collection.document(target.getKey()).delete();
                                     DocumentReference addedDocRef = collection.document();
                                     String key = addedDocRef.getId();
-//                                    target.group_member.clear();
                                     target.setKey(key);
                                     addedDocRef.set(target);
                                     Intent intent = new Intent(GroupProfile.this, PostLoginActivity.class);
@@ -222,7 +224,6 @@ public class GroupProfile extends AppCompatActivity {
                                             return;
                                         }
                                     }
-
                                     target.request2join(PostLoginActivity.username);
                                     collection.document(groupDocument.getId()).update("pending_invitations", target.pending_invitations);
                                     Toast.makeText(GroupProfile.this, "You have requested the creator's permission", Toast.LENGTH_LONG).show();
@@ -303,7 +304,7 @@ public class GroupProfile extends AppCompatActivity {
 
                                 public void onClick(DialogInterface dialog, int id) {
                                     for (String member : target.group_member) {
-                                        Query searchGroup = collectionProfile.whereEqualTo("name", member);
+                                        Query searchGroup = collectionProfile.whereEqualTo("username", member);
                                         searchGroup.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                             @Override
                                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -312,20 +313,23 @@ public class GroupProfile extends AppCompatActivity {
                                                         UserProfile user = document.toObject(UserProfile.class);
                                                         user.groups.remove(target.getName());
                                                         collectionProfile.document(document.getId()).update("groups", user.groups);
+                                                        if(user.getUsername().equals(PostLoginActivity.username)){
+                                                            PostLoginActivity.current_user.groups = user.groups;
+                                                        }
                                                     }
+                                                    DocumentReference addedDocRef = close_collection.document();
+                                                    String key = addedDocRef.getId();
+                                                    target.setKey(key);
+                                                    addedDocRef.set(target);
+                                                    collection.document(groupDocument.getId()).delete();
+                                                    Intent intent = new Intent(GroupProfile.this, PostLoginActivity.class);
+                                                    intent.putExtra("original_activity", "not main");
+                                                    startActivity(intent);
                                                 }
                                             }
                                         });
                                     }
-                                    DocumentReference addedDocRef = close_collection.document();
-                                    String key = addedDocRef.getId();
-//                                    target.group_member.clear();
-                                    target.setKey(key);
-                                    addedDocRef.set(target);
-                                    collection.document(groupDocument.getId()).delete();
-                                    Intent intent = new Intent(GroupProfile.this, PostLoginActivity.class);
-                                    intent.putExtra("original_activity", "not main");
-                                    startActivity(intent);
+
                                 }
                             }).setNegativeButton("No", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
@@ -354,5 +358,4 @@ public class GroupProfile extends AppCompatActivity {
         startActivity(intent);
     }
 }
-
 

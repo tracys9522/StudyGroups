@@ -71,9 +71,6 @@ public class MyGroupsActivity extends AppCompatActivity {
             message.setVisibility(View.VISIBLE);
         }
 
-        System.out.println("My Groups Size");
-        System.out.println(PostLoginActivity.current_user.groups.size());
-
     }
 
 }
