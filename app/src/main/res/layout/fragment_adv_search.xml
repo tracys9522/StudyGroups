@@ -43,7 +43,7 @@
                 android:textStyle="bold" />
 
             <CheckBox
-                android:id="@+id/professor"
+                android:id="@+id/course_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -58,26 +58,30 @@
             android:orientation="vertical"
             android:layout_marginLeft="20dp">
 
-            <Spinner
-                android:id="@+id/static_spinner"
+            <EditText
+                android:id="@+id/edit_depart"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:spinnerMode="dropdown" />
+                android:ems="10"
+                android:inputType="textPersonName" />
 
-            <Spinner
-                android:id="@+id/static_spinner2"
+            <EditText
+                android:id="@+id/edit_course"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:spinnerMode="dropdown" />
+                android:ems="10"
+                android:inputType="textPersonName" />
 
-            <Spinner
-                android:id="@+id/static_spinner3"
+            <EditText
+                android:id="@+id/edit_professor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:spinnerMode="dropdown" />
+                android:ems="10"
+                android:inputType="textPersonName" />
+
         </LinearLayout>
 
     </LinearLayout>

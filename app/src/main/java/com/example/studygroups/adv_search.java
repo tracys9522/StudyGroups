@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.Spinner;
 
 import java.util.ArrayList;
@@ -43,8 +44,6 @@ public class adv_search extends Fragment {
     private CheckBox box3;
 
     private Spinner staticSpinner;
-    private Spinner staticSpinner2;
-    private Spinner staticSpinner3;
 
     public adv_search() {
         // Required empty public constructor
@@ -77,7 +76,9 @@ public class adv_search extends Fragment {
         }
     }
 
-    //FirebaseFirestore myfirestore;
+    EditText edit_course;
+    EditText edit_prof;
+    EditText edit_depart;
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
@@ -85,25 +86,13 @@ public class adv_search extends Fragment {
         View v = inflater.inflate(R.layout.fragment_adv_search, container,false);
 
         //spinner for departments
+        /*
         staticSpinner = v.findViewById(R.id.static_spinner);
         ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(this.getActivity(),
                 android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.department));
         myAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         staticSpinner.setAdapter(myAdapter);
-
-        //spinner for course number
-        staticSpinner2 = v.findViewById(R.id.static_spinner2);
-        ArrayAdapter<String> myAdapter2 = new ArrayAdapter<String>(this.getActivity(),
-                android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.number));
-        myAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        staticSpinner2.setAdapter(myAdapter2);
-
-        //spinner for professor
-        staticSpinner3 = v.findViewById(R.id.static_spinner3);
-        ArrayAdapter<String> myAdapter3 = new ArrayAdapter<String>(this.getActivity(),
-                android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.professor));
-        myAdapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        staticSpinner3.setAdapter(myAdapter3);
+        */
 
         //Search
         Button search = v.findViewById(R.id.search);
@@ -111,10 +100,11 @@ public class adv_search extends Fragment {
 
         box1 = v.findViewById(R.id.type_title);
         box2 = v.findViewById(R.id.coursenum);
-        box3 = v.findViewById(R.id.professor);
+        box3 = v.findViewById(R.id.course_edit);
 
-        //insert temp values ---- be replaced by Aneesh's part
-        //myfirestore = FirebaseFirestore.getInstance();
+        edit_course = v.findViewById(R.id.edit_course);
+        edit_prof = v.findViewById(R.id.edit_professor);
+        edit_depart = v.findViewById(R.id.edit_depart);
 
         search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,20 +117,21 @@ public class adv_search extends Fragment {
                 String professor= "";
 
                 if(box1.isChecked()){
-                    department= staticSpinner.getSelectedItem().toString();
+                    //department= staticSpinner.getSelectedItem().toString();
+                    department = edit_depart.getText().toString();
                     info.add(department);
 
                 }
                 else info.add("");
 
                 if(box2.isChecked()){
-                    course_no = staticSpinner2.getSelectedItem().toString();
+                    course_no = edit_course.getText().toString();
                     info.add(course_no);
                 }
                 else info.add("");
 
                 if(box3.isChecked()){
-                    professor = staticSpinner3.getSelectedItem().toString();
+                    professor = edit_prof.getText().toString();
                     info.add(professor);
                 }
                 else info.add("");

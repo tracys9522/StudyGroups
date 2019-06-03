@@ -26,23 +26,12 @@
 
 
     <string-array name="department">
+        <item>AMTH</item>
+        <item>CENG</item>
         <item>COEN</item>
         <item>ELEN</item>
         <item>MECH</item>
-        <item>BIO</item>
-    </string-array>
-
-    <string-array name="number">
-        <item>10</item>
-        <item>11</item>
-        <item>12</item>
-        <item>13</item>
-    </string-array>
-
-    <string-array name="professor">
-        <item>Atkinson</item>
-        <item>Figueira</item>
-        <item>Danielson</item>
+        <item>BIOE</item>
     </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->
