@@ -98,19 +98,7 @@ public class Profile extends AppCompatActivity
         acceptButton = (Button) findViewById(R.id.accept_button);
         rejectButton = (Button) findViewById(R.id.reject_button);
 
-        classesAdapter = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                classes);
 
-        classesList.setAdapter(classesAdapter);
-
-        groupsAdapter = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                PostLoginActivity.current_user.groups);
-
-        groupsList.setAdapter(groupsAdapter);
 
         email = getIntent().getStringExtra("username");
         showButtons = getIntent().getStringExtra("showButtons");
@@ -120,6 +108,73 @@ public class Profile extends AppCompatActivity
         } catch (java.lang.NullPointerException exception) {
             group = null;
         }
+
+        Query query = collection.whereEqualTo("username", email);
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        userDoc = document.getReference();
+                        UserProfile user = document.toObject(UserProfile.class);
+
+                        if (user.display_name != null) {
+                            userName.setText(user.display_name);
+                        }
+                        if (user.major != null) {
+                            majorText.setText(user.major);
+                        }
+                        if (user.profilePicture != null) {
+                            imguri = user.profilePicture;
+                            String filename = user.profilePicture;
+                            StorageReference filepath = FirebaseStorage.getInstance().getReference("Images").child(filename);
+                            File localFile = null;
+                            try {
+                                localFile = File.createTempFile("images", "jpeg");
+                                path = localFile.getPath();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            filepath.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                    // Local temp file has been created
+                                    Bitmap myBitmap = BitmapFactory.decodeFile(path);
+                                    profilePicture.setImageBitmap(myBitmap);
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    // Handle any errors
+                                }
+                            });
+
+                        } else {
+                            imguri = null;
+                        }
+                        if (user.classes.size() > 0) {
+                            for (int i = 0; i < user.classes.size(); i++) {
+                                classes.add(i, user.classes.get(i));
+                            }
+                            classesAdapter.notifyDataSetChanged();
+                        } else {
+                            LinearLayout classView = (LinearLayout) findViewById(R.id.classesView);
+                            classView.setVisibility(View.GONE);
+                        }
+                        ArrayList<String> tempGroups = user.groups;
+                        if (tempGroups != null) {
+                            for (int i = 0; i < user.groups.size(); i++) {
+                                groups.add(i, user.groups.get(i));
+                            }
+                            groupsAdapter.notifyDataSetChanged();
+                        }
+
+
+                    }
+                }
+            }
+        });
 
         if (showButtons == null) {
             acceptButton.setVisibility(View.GONE);
@@ -198,70 +253,20 @@ public class Profile extends AppCompatActivity
             }
         });
 
-        Query query = collection.whereEqualTo("username", email);
-        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        userDoc = document.getReference();
-                        UserProfile user = document.toObject(UserProfile.class);
 
-                        if (user.display_name != null) {
-                            userName.setText(user.display_name);
-                        }
-                        if (user.major != null) {
-                            majorText.setText(user.major);
-                        }
-                        if (user.profilePicture != null) {
-                            imguri = user.profilePicture;
-                            String filename = user.profilePicture;
-                            StorageReference filepath = FirebaseStorage.getInstance().getReference("Images").child(filename);
-                            File localFile = null;
-                            try {
-                                localFile = File.createTempFile("images", "jpeg");
-                                path = localFile.getPath();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+        classesAdapter = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_list_item_1,
+                classes);
 
-                            filepath.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                                    // Local temp file has been created
-                                    Bitmap myBitmap = BitmapFactory.decodeFile(path);
-                                    profilePicture.setImageBitmap(myBitmap);
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception exception) {
-                                    // Handle any errors
-                                }
-                            });
+        classesList.setAdapter(classesAdapter);
 
-                        } else {
-                            imguri = null;
-                        }
-                        if (user.classes.size() > 0) {
-                            for (int i = 0; i < user.classes.size(); i++) {
-                                classes.add(i, user.classes.get(i));
-                            }
-                            classesAdapter.notifyDataSetChanged();
-                        }
-                        ArrayList<String> tempGroups = user.groups;
-                        if (tempGroups != null) {
-                            for (int i = 0; i < user.groups.size(); i++) {
-                                groups.add(i, user.groups.get(i));
-                            }
-                            groupsAdapter.notifyDataSetChanged();
-                        }
+        groupsAdapter = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_list_item_1,
+                PostLoginActivity.current_user.groups);
 
-
-                    }
-                }
-            }
-        });
-
+        groupsList.setAdapter(groupsAdapter);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -283,10 +288,7 @@ public class Profile extends AppCompatActivity
 
             }
         });
-        if (classes.size() == 0) {
-            LinearLayout classView = (LinearLayout) findViewById(R.id.classesView);
-            classView.setVisibility(View.GONE);
-        }
+
         groupsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
 
