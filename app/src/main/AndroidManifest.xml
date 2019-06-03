@@ -44,7 +44,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Messages"
-            android:label="@string/title_activity_messages"
+            android:label="Group Files"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Search"
