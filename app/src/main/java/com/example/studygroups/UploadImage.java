@@ -65,7 +65,7 @@ public class UploadImage extends AppCompatActivity {
             image = target.images;
             status = true;
         }
-        if(getIntent().getStringExtra("profileAction").contentEquals("true")){
+        if(getIntent().getStringExtra("profileAction") != null){
             status = false;
             username = getIntent().getStringExtra("username");
         }
@@ -154,6 +154,10 @@ public class UploadImage extends AppCompatActivity {
 
         }
 
+        if(datafile == null){
+            Toast.makeText(UploadImage.this, "Please upload an image", Toast.LENGTH_LONG).show();
+            return;
+        }
 
         UploadTask uploadTask = imageRef.putBytes(datafile);
         uploadTask
