@@ -25,6 +25,7 @@ public class MyGroupsActivity extends AppCompatActivity {
     Group g;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     HashMap<String, Group> name2group = new HashMap<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +36,7 @@ public class MyGroupsActivity extends AppCompatActivity {
 
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
                 for (DocumentSnapshot snapshot : documentSnapshots) {
-                    if(snapshot.get("name") != null) {
+                    if (snapshot.get("name") != null) {
                         Group group = snapshot.toObject(Group.class);
                         name2group.put((String) snapshot.get("name"), group);
                     }
@@ -44,9 +45,9 @@ public class MyGroupsActivity extends AppCompatActivity {
         });
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                MyGroupsActivity.this,
+                this,
                 android.R.layout.simple_list_item_1,
-                 PostLoginActivity.current_user.groups);
+                PostLoginActivity.current_user.groups);
 
         listview.setAdapter(arrayAdapter);
 
@@ -64,7 +65,7 @@ public class MyGroupsActivity extends AppCompatActivity {
         });
 
 
-        if(PostLoginActivity.current_user.groups.size() == 0){
+        if (PostLoginActivity.current_user.groups.size() == 0) {
             TextView message = (TextView) findViewById(R.id.noPendingMessage);
             message.setText("You are not part of any groups");
             message.setVisibility(View.VISIBLE);
@@ -74,6 +75,5 @@ public class MyGroupsActivity extends AppCompatActivity {
         System.out.println(PostLoginActivity.current_user.groups.size());
 
     }
-
 
 }

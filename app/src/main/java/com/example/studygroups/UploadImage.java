@@ -115,10 +115,7 @@ public class UploadImage extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    FileUploader();
-                    //collection.document(groupDocument.getId()).update("images", image);
-
-
+                FileUploader();
             }
         });
 
