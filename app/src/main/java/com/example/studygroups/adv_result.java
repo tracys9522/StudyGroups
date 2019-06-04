@@ -52,9 +52,9 @@ public class adv_result extends AppCompatActivity {
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayList);
         listView.setAdapter(adapter);
 
-        String department = search_criteria.get(0);
+        String department = search_criteria.get(0).toUpperCase();
         String course_no = search_criteria.get(1);
-        String professor = search_criteria.get(2);
+        String professor = search_criteria.get(2).toUpperCase();
 
         Query query = null;
 
