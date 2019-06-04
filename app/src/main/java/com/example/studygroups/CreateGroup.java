@@ -65,10 +65,10 @@ public class CreateGroup extends AppCompatActivity
 
     public void addGroup(View view){
         String group_name = ((EditText) findViewById(R.id.group_name)).getText().toString();
-        String type = ((EditText) findViewById(R.id.type_input)).getText().toString();
-        String professor = ((EditText) findViewById(R.id.professor_input)).getText().toString();
+        String type = ((EditText) findViewById(R.id.type_input)).getText().toString().toUpperCase();
+        String professor = ((EditText) findViewById(R.id.professor_input)).getText().toString().toUpperCase();
         String course_no = ((EditText) findViewById(R.id.course_number_input)).getText().toString();
-        String department = ((EditText) findViewById(R.id.department_input)).getText().toString();
+        String department = ((EditText) findViewById(R.id.department_input)).getText().toString().toUpperCase();
         String description = ((EditText) findViewById(R.id.groupDescription)).getText().toString();
         if(description == null){
             description = "";

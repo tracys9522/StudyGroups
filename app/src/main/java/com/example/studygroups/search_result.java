@@ -37,7 +37,7 @@ public class search_result extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        String value = intent.getStringExtra("search");
+        String value = intent.getStringExtra("search").toUpperCase();
         System.out.println("SEARCH CRITERIA: "+value);
         setContentView(R.layout.activity_search_result);
 
@@ -47,23 +47,23 @@ public class search_result extends AppCompatActivity {
         adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, arrayList);
         listView.setAdapter(adapter);
 
+
         if(value.equals("") || value == null){
             collection.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if(task.isSuccessful()){
-                        for(QueryDocumentSnapshot document: task.getResult()){
-                            Group group = document.toObject(Group.class);
-                            String value = group.toString();
-                            System.out.println(value);
-                            arrayList.add(value);
-                            result_group.add(group);
-                        }
-                        adapter.notifyDataSetChanged();
-                    }
-                }
+           @Override
+           public void onComplete(@NonNull Task<QuerySnapshot> task) {
+               if (task.isSuccessful()) {
+                   for (QueryDocumentSnapshot document : task.getResult()) {
+                       Group group = document.toObject(Group.class);
+                       String value = group.toString();
+                       System.out.println(value);
+                       arrayList.add(value);
+                       result_group.add(group);
+                   }
+                   adapter.notifyDataSetChanged();
+               }
+            }
             });
-
         }
 
         else {
